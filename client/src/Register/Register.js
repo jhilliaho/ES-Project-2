@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import './register.css';
 
-class Login extends Component {
+class Register extends Component {
     render() {
         return (
-            <div className="login">
+            <div className="register">
                 This will be register form
             </div>
         );
     }
 }
 
-export default Login;
+export default Register;
