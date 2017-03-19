@@ -6,7 +6,7 @@ import './layout.css';
 
 // Use react-router-bootstrap wrapper in navbar:
 // http://stackoverflow.com/questions/35687353/react-bootstrap-link-item-in-a-navitem
-
+// This navbar includes the links to different modules.
 class Layout extends Component {
   render() {
     return (
@@ -19,14 +19,6 @@ class Layout extends Component {
                 </Navbar.Header>
 
                 <Nav>
-                    <LinkContainer to="/login">
-                        <NavItem eventKey={1}>Login</NavItem>
-                    </LinkContainer>
-
-                    <LinkContainer to="/register">
-                        <NavItem eventKey={2}>Register</NavItem>
-                    </LinkContainer>
-
                     <NavDropdown eventKey={3} title="<username>" id="basic-nav-dropdown">
                         <LinkContainer to="/user">
                             <MenuItem eventKey={3.1}>Profile</MenuItem>
@@ -34,9 +26,7 @@ class Layout extends Component {
 
                         <MenuItem divider />
 
-                        <LinkContainer to="/logout">
-                            <MenuItem eventKey={3.4}>Log out</MenuItem>
-                        </LinkContainer>
+                        <MenuItem href="/logout" eventKey={3.4}>Log out</MenuItem>
                     </NavDropdown>
                 </Nav>
             </Navbar>
