@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Router, Route, hashHistory, IndexRoute} from 'react-router'
-import User from '../user/user';
-import Home from '../home/home';
+import User from '../components/user';
+import Home from '../components/home';
 import Layout from '../layout/layout';
 import './app.css';
 

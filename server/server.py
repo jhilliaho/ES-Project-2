@@ -11,16 +11,14 @@ import json
 import os
 import flask_login
 import configuration
-
-
 import os
+import api
 
 template_dir = os.path.abspath('../client/build')
 static_dir = os.path.abspath('../client/build/static')
 
 app = Flask(__name__,template_folder=template_dir,static_folder=static_dir)
 CORS(app)
-
 
 ### AUTHENTICATION STARTS ###
 # https://flask-login.readthedocs.io/en/latest/
@@ -51,7 +49,6 @@ def user_loader(id):
     print("User_loader", id)
 
     usr = [u for u in users if u["id"] == id]
-    print(usr)
 
     if not usr:
         return
@@ -101,7 +98,22 @@ def unauthorized():
 def index():
     return render_template('index.html')
 
+
+@app.route('/api/test', methods=["GET"])
+@flask_login.login_required
+def test():
+    api.write()
+    return api.read()
+
+
 ### ROUTING ENDS ###
+
 
 if __name__ == '__main__':
     app.run(host="localhost", port=3001)
+
+
+# database connection and schema
+# REST API
+# Authentication
+

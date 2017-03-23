@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Playlist from './Playlist';
+import Song from './song';
 
 it('renders without crashing', () => {
   const div = document.createElement('div');
-  ReactDOM.render(<Playlist />, div);
+  ReactDOM.render(<Song />, div);
 });
