@@ -7,7 +7,7 @@ from sqlalchemy.orm import sessionmaker
 Base = declarative_base()
 
 # Create db engine with username, password, db address and db name
-engine = create_engine('mysql+mysqldb://root:täkynäniköhänkin@localhost/test_db', echo=True)
+engine = create_engine('mysql+mysqldb://username:password@localhost/db_name', echo=True)
 
 app = Flask(__name__)
 
