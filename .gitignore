@@ -1,7 +1,7 @@
 **.DS_STORE*
 **.Rhistory
 **.idea
-
+**configuration.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
