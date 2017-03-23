@@ -3,11 +3,11 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String, Sequence
 from sqlalchemy.orm import sessionmaker
-
+import configuration
 Base = declarative_base()
 
 # Create db engine with username, password, db address and db name
-engine = create_engine('mysql+mysqldb://username:password@localhost/db_name', echo=True)
+engine = create_engine('mysql+mysqldb://' + configuration.username + ':' + configuration.password + '@' + configuration.db_host + '/' + configuration.db_name, echo=True)
 
 app = Flask(__name__)
 

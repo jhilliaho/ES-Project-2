@@ -10,6 +10,7 @@ from flask_restful import Resource, Api
 import json
 import os
 import flask_login
+import configuration
 
 
 import os
@@ -30,7 +31,7 @@ CORS(app)
     # @flask_login.login_required
     # @login_manager.unauthorized_handler
 
-app.secret_key = 'bec519fc16670fd30a9aafedb616d920'
+app.secret_key = configuration.secret_key
 login_manager = flask_login.LoginManager()
 login_manager.init_app(app)
 
