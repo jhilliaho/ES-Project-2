@@ -19,7 +19,7 @@ class User(Base):
     id = Column(Integer, Sequence('user_id_seq'), primary_key=True)
     name = Column(String(50))
     email = Column(String(50), unique=True)
-    password = Column(String(12))
+    password = Column(String(200))
     creation_date = Column(DateTime, default=datetime.datetime.utcnow)
 
     # Relationships to songs and playlists
@@ -41,7 +41,7 @@ class Song(Base):
     artist = Column(String(50))
     album = Column(String(50))
     release_year = Column(Integer())
-    path = Column(String(50))
+    path = Column(String(200))
     creation_date = Column(DateTime, default=datetime.datetime.utcnow)
 
     # Relationship with user
