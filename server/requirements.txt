@@ -21,8 +21,11 @@ jmespath==0.9.1
 MarkupSafe==1.0
 mysqlclient==1.3.10
 packaging==16.8
+passlib==1.7.1
 pathspec==0.5.0
+pyaml==16.12.2
 pyparsing==2.2.0
+pyswagger==0.8.27
 python-dateutil==2.6.0
 pytz==2016.10
 PyYAML==3.12
@@ -32,6 +35,7 @@ six==1.10.0
 SQLAlchemy==1.1.6
 tabulate==0.7.5
 termcolor==1.1.0
+validate-email==1.3
 wcwidth==0.1.7
 websocket-client==0.40.0
 Werkzeug==0.11.15
