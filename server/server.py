@@ -7,6 +7,8 @@ from flask import abort
 from flask_cors import CORS, cross_origin
 from flask import render_template
 from flask_restful import Resource, Api
+from flasgger import Swagger
+from flasgger.utils import swag_from
 import json
 import os
 import flask_login
@@ -18,6 +20,7 @@ template_dir = os.path.abspath('../client/build')
 static_dir = os.path.abspath('../client/build/static')
 
 app = Flask(__name__,template_folder=template_dir,static_folder=static_dir)
+Swagger(app)
 
 #Added for faster react development as python api cant be accessed from react when its running own server
 CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000"}}, supports_credentials=True)
@@ -35,11 +38,6 @@ app.secret_key = configuration.secret_key
 login_manager = flask_login.LoginManager()
 login_manager.init_app(app)
 
-# This MUST be changed to real database
-users = [{"id": "aa@aa.aa", "password": "aa@aa.aa"},
-         {"id": "bb@bb.bb", "password": "bb@bb.bb"},
-         {"id": "cc@cc.cc", "password": "cc@cc.cc"},]
-
 # User class needed for authentication.
 class User(flask_login.UserMixin):
     pass
@@ -47,20 +45,20 @@ class User(flask_login.UserMixin):
 # Needed for authentication.
 # This function returns a User object based on the user id
 @login_manager.user_loader
-def user_loader(id):
-    print("User_loader", id)
+def user_loader(email):
+    print("User_loader", email)
 
-    usr = [u for u in users if u["id"] == id]
+    users = api.getUsers()
 
-    if not usr:
-        return
+    for i in range(len(users)):
+        if(email==users[i].email):
+            user = User()
+            user.id = users[i].email
+            user.password = users[i].password
 
-    usr = usr[0]
-    user = User()
-    user.id = usr["id"]
-    user.password = usr["password"]
+            return user
 
-    return user
+    return
 
 
 @app.route('/login', methods=['POST', 'GET'])
@@ -68,16 +66,19 @@ def login():
     if flask.request.method == 'GET':
         return render_template('login.html')
 
-    id = request.form['email']
+    email = request.form['email']
     password = request.form['password']
 
-    usr = [u for u in users if u["id"] == id and u["password"] == password]
-    if usr:
-        usr = usr[0]
-        user = User()
-        user.id = usr["id"]
-        flask_login.login_user(user)
-        return flask.redirect(flask.url_for('index'))
+    users = api.getUsers()
+
+    for i in range(len(users)):
+        if users[i].email == email and users[i].password == password:
+            user = User()
+            user.id = users[i].email
+            user.password = users[i].password
+
+            flask_login.login_user(user)
+            return flask.redirect(flask.url_for('index'))
 
     return flask.redirect(flask.url_for('login'))
 
@@ -100,12 +101,48 @@ def unauthorized():
 def index():
     return render_template('index.html')
 
+@app.route("/api/spec")
+def spec():
+    return jsonify(swagger(app))
+
+### API ###
 
 @app.route('/api/test', methods=["GET"])
 @flask_login.login_required
+@swag_from('swag/test.yml')
 def test():
     return api.read()
 
+@app.route('/api/users', methods=["GET","POST"])
+@flask_login.login_required
+#@swag_from('swag/test.yml')
+def users():
+    if flask.request.method == 'GET':
+        users = api.getUsers()
+
+        res = []
+        for i in range(len(users)):
+            res.append(users[i].getJson)
+
+        return jsonify(res)
+    else:
+        user ={"email":"aa@aa.aa", "name": "User aa", "password":"aa@aa.aa"}
+        api.addUser(user)
+        #notification that user was added
+        return flask.redirect(flask.url_for('login'))
+
+@app.route('/api/user', methods=["GET","POST"])
+@flask_login.login_required
+#@swag_from('swag/test.yml')
+def user():
+    email = flask_login.current_user.id
+    if flask.request.method == 'GET':
+        user = api.getUserById(email)
+        return jsonify(user.getJson)
+    else:
+        user ={"email":"aa@aa.aa", "name": "User aa", "password":"aa@aa.aa"}
+        api.updateUserById(id)
+        return flask.redirect(flask.url_for('login'))
 
 ### ROUTING ENDS ###
 

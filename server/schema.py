@@ -6,6 +6,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm import relationship
 import configuration
 import datetime
+from flask import jsonify
 Base = declarative_base()
 
 # Create db engine with username, password, db address and db name
@@ -26,7 +27,12 @@ class User(Base):
     songs = relationship("Song", back_populates="user")
     playlists = relationship("Playlist", back_populates="user")
 
-    def __repr__(self): return "<User(username='%s', email='%s', password='%s')>" % (self.username, self.email, self.password)
+    def __repr__(self): return "<User(name='%s', email='%s', password='%s')>" % (self.name, self.email, self.password)
+
+    @property
+    def getJson(self):
+        user = {'name':self.name,'email':self.email}
+        return user
 
 # Association table for many-to-may relationship between songs and playlists
 songs_and_playlists = Table('songs_and_playlists', Base.metadata,
@@ -54,6 +60,11 @@ class Song(Base):
         secondary=songs_and_playlists,
         back_populates="songs")
 
+    @property
+    def getJson(self):
+        song = {'title':self.title,'artist':self.artist,'album':self.album,'release_year':self.release_year,'path':self.path,'playlists':self.playlists}
+        return song
+
 
 class Playlist(Base):
     __tablename__ = "playlists"
@@ -70,6 +81,11 @@ class Playlist(Base):
         "Song",
         secondary=songs_and_playlists,
         back_populates="playlists")
+
+    @property
+    def getJson(self):
+        playlist = {'name':self.name,'email':self.email,'songs':self.songs}
+        return user
 
 # Create all non-existing tables
 # This can't update tables!

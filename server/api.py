@@ -1,4 +1,6 @@
 from schema import *
+from flask import jsonify
+import json
 
 def write():
     session = Session()
@@ -15,3 +17,25 @@ def read():
 
     session.close()
     return arr
+
+
+### USER ###
+def getUsers():
+    session = Session()
+    users = session.query(User).all()
+
+    session.close()
+    return users
+
+def addUser():
+    pass
+
+def getUserById(email):
+    session = Session()
+    user = session.query(User).filter(User.email==email).first()
+
+    session.close()
+    return user
+
+def updateUserById(id):
+    pass
