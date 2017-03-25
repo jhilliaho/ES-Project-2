@@ -1,5 +1,6 @@
 from schema import *
 from flask import jsonify
+from passlib.hash import pbkdf2_sha256
 import json
 
 def write():
@@ -27,8 +28,14 @@ def getUsers():
     session.close()
     return users
 
-def addUser():
-    pass
+def addUser(name,email,password):
+    session = Session()
+    
+    user = User(email=email, name=name, password=password)
+
+    session.add(user)
+    session.commit()
+    session.close()
 
 def getUserById(email):
     session = Session()
@@ -37,5 +44,12 @@ def getUserById(email):
     session.close()
     return user
 
-def updateUserById(id):
-    pass
+def updateUserById(email,name,password):
+    session = Session()
+    
+    user = session.query(User).filter(User.email==email).first()
+    user.name = name
+    user.password = password
+
+    session.commit()
+    session.close()

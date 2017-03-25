@@ -74,9 +74,6 @@ def login():
 
     for i in range(len(users)):
 
-        print(users[i])
-
-
         if users[i].email == email and pbkdf2_sha256.verify(password, users[i].password):
             user = User()
             user.id = users[i].email
@@ -85,6 +82,21 @@ def login():
             flask_login.login_user(user)
             return flask.redirect(flask.url_for('index'))
 
+    return flask.redirect(flask.url_for('login'))
+
+@app.route('/register', methods=['POST', 'GET'])
+def register():
+    if flask.request.method == 'GET':
+        print("register")
+        return render_template('register.html')
+    
+    name = request.form['name']
+    email = request.form['email']
+    password = request.form['password']
+    password = pbkdf2_sha256.hash(password)
+
+    api.addUser(name,email,password)
+    #notification that user was added
     return flask.redirect(flask.url_for('login'))
 
 @app.route('/logout', methods=['POST', 'GET'])
@@ -118,23 +130,21 @@ def spec():
 def test():
     return api.read()
 
-@app.route('/api/users', methods=["GET","POST"])
-@flask_login.login_required
+# i dont know if we need these routes...
+#@app.route('/api/users', methods=["GET","POST"])
+#@flask_login.login_required
 #@swag_from('swag/test.yml')
-def users():
-    if flask.request.method == 'GET':
-        users = api.getUsers()
-
-        res = []
-        for i in range(len(users)):
-            res.append(users[i].getJson)
-
-        return jsonify(res)
-    else:
-        user ={"email":"aa@aa.aa", "name": "User aa", "password":"aa@aa.aa"}
-        api.addUser(user)
-        #notification that user was added
-        return flask.redirect(flask.url_for('login'))
+#def users():
+#    if flask.request.method == 'GET':
+#        users = api.getUsers()
+#        res = []
+#        for i in range(len(users)):
+#            res.append(users[i].name) #no personal data should be shown for other users, so we only return names
+#        return jsonify(res)
+#    else:
+#        #implement addition of a user using api.addUser(name, email, password)
+#        #notification that user was added
+#        return flask.redirect(flask.url_for('login'))
 
 @app.route('/api/user', methods=["GET","POST"])
 @flask_login.login_required
@@ -145,8 +155,11 @@ def user():
         user = api.getUserById(email)
         return jsonify(user.getJson)
     else:
-        user ={"email":"aa@aa.aa", "name": "User aa", "password":"aa@aa.aa"}
-        api.updateUserById(id)
+        name = request.form['name']
+        password = request.form['password']
+        password = pbkdf2_sha256.hash(password)
+        
+        api.updateUserById(email,name,password)
         return flask.redirect(flask.url_for('login'))
 
 ### ROUTING ENDS ###
