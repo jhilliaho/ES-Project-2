@@ -9,6 +9,7 @@ from flask import render_template
 from flask_restful import Resource, Api
 from flasgger import Swagger
 from flasgger.utils import swag_from
+from passlib.hash import pbkdf2_sha256
 import json
 import os
 import flask_login
@@ -72,7 +73,11 @@ def login():
     users = api.getUsers()
 
     for i in range(len(users)):
-        if users[i].email == email and users[i].password == password:
+
+        print(users[i])
+
+
+        if users[i].email == email and pbkdf2_sha256.verify(password, users[i].password):
             user = User()
             user.id = users[i].email
             user.password = users[i].password

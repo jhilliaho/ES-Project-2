@@ -15,8 +15,8 @@ session.query(User).delete()
 
 # Add new data
 users = [
-    User(email="aa@aa.aa", name="User aa", password="aa@aa.aa"),
-    User(email="bb@bb.bb", name="User bb", password="bb@bb.bb")
+    User(email="aa@aa.aa", name="User aa", password="$pbkdf2-sha256$29000$spby3psTQmiNsXbOmZNSKg$3dFUYhI.QU8s0AMAvb6kgfWUvXjcH0JPg/advRlDXUU"),
+    User(email="bb@bb.bb", name="User bb", password="$pbkdf2-sha256$29000$IASg9D7nHANASEmplXIOwQ$DQZTEx7YtcREKJSn998B75zyVEcmYH/rt6JLoehnh58")
 ]
 
 session.add_all(users)
