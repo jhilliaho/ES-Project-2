@@ -18,7 +18,9 @@ template_dir = os.path.abspath('../client/build')
 static_dir = os.path.abspath('../client/build/static')
 
 app = Flask(__name__,template_folder=template_dir,static_folder=static_dir)
-CORS(app)
+
+#Added for faster react development as python api cant be accessed from react when its running own server
+CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000"}}, supports_credentials=True)
 
 ### AUTHENTICATION STARTS ###
 # https://flask-login.readthedocs.io/en/latest/
@@ -102,7 +104,6 @@ def index():
 @app.route('/api/test', methods=["GET"])
 @flask_login.login_required
 def test():
-    api.write()
     return api.read()
 
 

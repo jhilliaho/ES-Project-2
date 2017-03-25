@@ -16,17 +16,13 @@ class Layout extends Component {
 
     fetchUsername() {
 
-        let result = fetch('http://localhost:3001/api/test', {mode: "cors", credentials: "include"
-        })
-        result.then((response) => {
-            return response.text()
-        }).then((text) => {
-            console.log("WE GOT ", text)
-            this.setState({username: text});
-
-        }).catch(function(ex) {
-            console.log('FAIL: ', ex)
-        })
+        let result = fetch('http://localhost:3001/api/test', {mode: "cors", credentials: "include"})
+        result.then((response) => {return response.text()})
+            .then((text) => {
+                console.log("WE GOT ", text)
+                this.setState({username: text});
+            })
+            .catch(function(ex) {console.log('FAIL: ', ex)})
     }
 
   render() {
