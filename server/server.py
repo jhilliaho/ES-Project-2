@@ -155,11 +155,9 @@ def user():
         user = api.getUserById(email)
         return jsonify(user.getJson)
     else:
-        name = request.form['name']
-        password = request.form['password']
-        password = pbkdf2_sha256.hash(password)
+        name = request.args.get("name")
         
-        api.updateUserById(email,name,password)
+        api.updateUserById(email,name)
         return flask.redirect(flask.url_for('login'))
 
 ### ROUTING ENDS ###

@@ -44,12 +44,11 @@ def getUserById(email):
     session.close()
     return user
 
-def updateUserById(email,name,password):
+def updateUserById(email,name):
     session = Session()
     
     user = session.query(User).filter(User.email==email).first()
     user.name = name
-    user.password = password
 
     session.commit()
     session.close()

@@ -9,9 +9,9 @@ import './layout.css';
 // This navbar includes the links to different modules.
 class Layout extends Component {
     constructor() {
-      super()
+        super()
         this.fetchUsername();
-      this.state = {'username': ""}
+        this.state = {'username': ""}
     }
 
     fetchUsername() {
