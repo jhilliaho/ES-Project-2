@@ -109,7 +109,10 @@ def logout():
 # Redirect unauthorized requests to the login page
 @login_manager.unauthorized_handler
 def unauthorized():
-    return flask.redirect(flask.url_for('login'))
+    if flask.request.method == 'GET':
+        return flask.redirect(flask.url_for('login'))
+    else:
+        abort(401)
 
 ### AUTHENTICATION ENDS ###
 
@@ -178,18 +181,37 @@ def getSong(song_id):
     pass
 
 
-# POST /api/song, adds one song must be logged in
+# TODO: Send files with ajax, not by form
+# POST /api/song, adds one song, must be logged in
 @app.route('/api/song', methods=["POST"])
 @flask_login.login_required
 def postSong():
-    pass
+    print("ADD SONG")
+    print(request.form)
+
+    fileOk = False
+
+    file = request.files['file']
+    if file.filename != '' and file:
+        file_extension = file.filename.split('.')[-1]
+        #TODO: check file type
+
+        filename = api.addSong(request.form["title"],request.form["artist"],request.form["album"],request.form["year"], flask_login.current_user.id, file_extension)
+        file.save(os.path.join("uploads", filename))
+        return flask.redirect(flask.url_for('index'))
+
+    print("ERROR")
+    return abort(400)
+
+
 
 
 # DELETE /api/song/id, delete one song, must be logged in and the owner of the song
 @app.route('/api/song/<song_id>', methods=["DELETE"])
 @flask_login.login_required
 def deleteSong(song_id):
-    pass
+    api.deleteSong(song_id, flask_login.current_user.id)
+    return "ok"
 
 
 # PUT /api/song/id, update song data, must be logged in and the owner of the song

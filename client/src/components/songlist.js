@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import {Table, Glyphicon, Button, Col, Row, Panel, Form, ControlLabel, FormControl, FormGroup} from 'react-bootstrap';
+import {Table, Glyphicon, Button, Accordion, Col, Row, Panel, Form, ControlLabel, FormControl, FormGroup} from 'react-bootstrap';
 import './songlist.css';
+import AddSong from './addsong'
 
 class SongList extends Component {
     constructor() {
@@ -9,6 +10,7 @@ class SongList extends Component {
         this.fetchSongs();
         this.fetchUser();
         this.handleChange = this.handleChange.bind(this);
+        this.deleteSong = this.deleteSong.bind(this);
     }
 
     fetchSongs() {
@@ -33,15 +35,31 @@ class SongList extends Component {
             .catch(function(ex) {console.log('FAIL: ', ex)})
     }
 
+    deleteSong(e) {
+        let id = e.currentTarget.name;
+        console.log("Deleting", id);
+        e.preventDefault();
+
+        let result = fetch('http://localhost:3001/api/song/' + id,
+            {
+                method: "DELETE",
+                mode: "cors",
+                credentials: "include"
+            });
+        result.then((res) => {
+                console.log(res)
+                this.fetchSongs();
+            })
+            .catch(function(ex) {console.log('FAIL: ', ex)})
+    }
+
     handleChange(e) {
-        console.log("Changed", e.target.name, e.target.value);
         this.setState({[e.target.name]:e.target.value.toLowerCase()});
     }
 
     render() {
 
         let rows = [];
-        console.log("Rendering");
         this.state["songs"].forEach((el) => {
 
             if (el.artist.toLowerCase().indexOf(this.state.artist) === -1 ||
@@ -54,14 +72,16 @@ class SongList extends Component {
             if (el.user_id === this.state.user_id) {
                 edit =
                     <td>
-                        <Glyphicon glyph="pencil" />
-                        <Glyphicon glyph="trash" />
-                        <Glyphicon glyph="plus" />
+                        <a href="#" ><Glyphicon glyph="pencil" /></a>
+                        <a href="#" name={el.id} onClick={this.deleteSong}>
+                            <Glyphicon glyph="trash" />
+                        </a>
+                        <a href="#" ><Glyphicon glyph="plus" /></a>
                     </td>
             } else {
                 edit =
                     <td>
-                        <Glyphicon glyph="plus" />
+                        <a href="#" ><Glyphicon glyph="plus" /></a>
                     </td>
             }
 
@@ -80,6 +100,12 @@ class SongList extends Component {
         return (
             <div className="songs">
                 <h3>Songs</h3>
+
+                <Accordion>
+                    <Panel header="Add song" eventKey="1">
+                        <AddSong/>
+                    </Panel>
+                </Accordion>
                 <Panel>
                     <Form inline>
                         <FormGroup className="filter">

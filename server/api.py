@@ -50,5 +50,35 @@ def getSongs():
     session.close()
     return arr
 
-def getSongById(user_id):
+def getSongById():
     pass
+
+def deleteSong(song_id, user_id):
+    print("DELETING SONG", song_id, " BY USER ", user_id)
+    session = Session()
+    song = session.query(Song).filter(Song.id==song_id and Song.user_id==user_id).first()
+    session.delete(song)
+    session.commit()
+    session.close()
+    return
+
+def addSong(title, artist, album, year, user_id, file_extension):
+    session = Session()
+    song = Song(title=title, artist=artist, album=album, release_year=year, user_id=user_id)
+    session.add(song)
+    session.commit()
+    id = song.id
+
+    song = session.query(Song).filter(Song.id==id).first()
+    song.path = str(song.id) + '-' + song.artist + '-' + song.title
+    song.path = ''.join(e for e in song.path if e.isalnum()).lower() + '.' + file_extension
+
+    path = song.path
+    session.commit()
+
+    session.close()
+    return path
+
+
+
+
