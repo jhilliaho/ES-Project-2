@@ -52,3 +52,23 @@ def updateUserById(email,name):
 
     session.commit()
     session.close()
+
+
+### SONG ###
+
+def getSongs(user_id):
+    session = Session()
+
+    arr = []
+    fields = ["id", "title", "artist", "album", "release_year", "path", "creation_date", "user_id"]
+    for song in session.query(Song).all():
+        song = song.getJsonSelectively(fields)
+        print("I am ", user_id, " song owner is ", song["user_id"])
+        if song["user_id"] == user_id:
+            song["owner"] = True
+        else:
+            song["owner"] = False
+        arr.append(song)
+
+    session.close()
+    return arr

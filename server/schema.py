@@ -1,4 +1,5 @@
 from flask import Flask
+from flask import jsonify
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String, Sequence, ForeignKey, Table, DateTime
@@ -7,6 +8,7 @@ from sqlalchemy.orm import relationship
 import configuration
 import datetime
 from flask import jsonify
+
 Base = declarative_base()
 
 # Create db engine with username, password, db address and db name
@@ -65,6 +67,11 @@ class Song(Base):
         song = {'title':self.title,'artist':self.artist,'album':self.album,'release_year':self.release_year,'path':self.path,'playlists':self.playlists}
         return song
 
+    def getJsonSelectively(self, fields):
+        song = {}
+        for field in fields:
+            song[field] = getattr(self, field)
+        return song
 
 class Playlist(Base):
     __tablename__ = "playlists"

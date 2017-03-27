@@ -46,18 +46,17 @@ class User(flask_login.UserMixin):
 # Needed for authentication.
 # This function returns a User object based on the user id
 @login_manager.user_loader
-def user_loader(email):
-    print("User_loader", email)
+def user_loader(id):
 
-    users = api.getUsers()
+    u = [user for user in api.getUsers() if str(user.id) == str(id)]
 
-    for i in range(len(users)):
-        if(email==users[i].email):
-            user = User()
-            user.id = users[i].email
-            user.password = users[i].password
-
-            return user
+    if u:
+        u = u[0]
+        usr = User()
+        usr.id = u.id
+        usr.email = u.email
+        usr.password = u.password
+        return usr
 
     return
 
@@ -70,13 +69,16 @@ def login():
     email = request.form['email']
     password = request.form['password']
 
+    print("Trying to log in user", email, password)
+
     users = api.getUsers()
 
     for i in range(len(users)):
-
         if users[i].email == email and pbkdf2_sha256.verify(password, users[i].password):
+
             user = User()
-            user.id = users[i].email
+            user.id = users[i].id
+            user.email = users[i].email
             user.password = users[i].password
 
             flask_login.login_user(user)
@@ -122,6 +124,8 @@ def index():
 def spec():
     return jsonify(swagger(app))
 
+
+
 ### API ###
 
 @app.route('/api/test', methods=["GET"])
@@ -160,8 +164,49 @@ def user():
         api.updateUserById(email,name)
         return flask.redirect(flask.url_for('login'))
 
-### ROUTING ENDS ###
 
+### SONGS ###
+
+# GET /api/song, returns all songs, must be logged in
+@app.route('/api/song', methods=["GET"])
+@flask_login.login_required
+def getAllSongs():
+    return jsonify(api.getSongs(flask_login.current_user.id))
+
+# GET /api/song/id, returns one song, must be logged in
+@app.route('/api/song/<song_id>', methods=["GET"])
+@flask_login.login_required
+def getSong(song_id):
+    pass
+
+
+# POST /api/song, adds one song must be logged in
+@app.route('/api/song', methods=["POST"])
+@flask_login.login_required
+def postSong():
+    pass
+
+
+# DELETE /api/song/id, delete one song, must be logged in and the owner of the song
+@app.route('/api/song/<song_id>', methods=["DELETE"])
+@flask_login.login_required
+def deleteSong(song_id):
+    pass
+
+
+# PUT /api/song/id, update song data, must be logged in and the owner of the song
+@app.route('/api/song/<song_id>', methods=["PUT"])
+@flask_login.login_required
+def updateSong(song_id):
+    pass
+
+
+
+
+
+
+
+### ROUTING ENDS ###
 
 if __name__ == '__main__':
     app.run(host="localhost", port=3001)
