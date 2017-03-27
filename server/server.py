@@ -154,14 +154,12 @@ def test():
 @flask_login.login_required
 #@swag_from('swag/test.yml')
 def user():
-    email = flask_login.current_user.id
+    id = flask_login.current_user.id
     if flask.request.method == 'GET':
-        user = api.getUserById(email)
-        return jsonify(user.getJson)
+        return jsonify(api.getUserById(id))
     else:
         name = request.args.get("name")
-        
-        api.updateUserById(email,name)
+        api.updateUserById(id,name)
         return flask.redirect(flask.url_for('login'))
 
 
@@ -171,7 +169,7 @@ def user():
 @app.route('/api/song', methods=["GET"])
 @flask_login.login_required
 def getAllSongs():
-    return jsonify(api.getSongs(flask_login.current_user.id))
+    return jsonify(api.getSongs())
 
 # GET /api/song/id, returns one song, must be logged in
 @app.route('/api/song/<song_id>', methods=["GET"])

@@ -3,23 +3,6 @@ from flask import jsonify
 from passlib.hash import pbkdf2_sha256
 import json
 
-def write():
-    session = Session()
-    ed_user = User(email='test', name='Ed dsdasd', password='ds')
-    session.add(ed_user)
-    session.commit()
-    session.close()
-
-def read():
-    session = Session()
-    arr = ""
-    for instance in session.query(User).order_by(User.id):
-        arr = instance.name + " " + instance.email
-
-    session.close()
-    return arr
-
-
 ### USER ###
 def getUsers():
     session = Session()
@@ -37,17 +20,19 @@ def addUser(name,email,password):
     session.commit()
     session.close()
 
-def getUserById(email):
+def getUserById(id):
     session = Session()
-    user = session.query(User).filter(User.email==email).first()
+    user = session.query(User).filter(User.id==id).first()
 
     session.close()
-    return user
 
-def updateUserById(email,name):
+    fields = ["id", "email", "name"]
+    return user.getJsonSelectively(fields)
+
+def updateUserById(id,name):
     session = Session()
-    
-    user = session.query(User).filter(User.email==email).first()
+
+    user = session.query(User).filter(User.id==id).first()
     user.name = name
 
     session.commit()
@@ -56,19 +41,14 @@ def updateUserById(email,name):
 
 ### SONG ###
 
-def getSongs(user_id):
+def getSongs():
     session = Session()
 
     arr = []
     fields = ["id", "title", "artist", "album", "release_year", "path", "creation_date", "user_id"]
-    for song in session.query(Song).all():
-        song = song.getJsonSelectively(fields)
-        print("I am ", user_id, " song owner is ", song["user_id"])
-        if song["user_id"] == user_id:
-            song["owner"] = True
-        else:
-            song["owner"] = False
-        arr.append(song)
-
+    for song in session.query(Song).all(): arr.append(song.getJsonSelectively(fields))
     session.close()
     return arr
+
+def getSongById(user_id):
+    pass

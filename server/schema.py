@@ -36,6 +36,12 @@ class User(Base):
         user = {'name':self.name,'email':self.email}
         return user
 
+    def getJsonSelectively(self, fields):
+        obj = {}
+        for field in fields:
+            obj[field] = getattr(self, field)
+        return obj
+
 # Association table for many-to-may relationship between songs and playlists
 songs_and_playlists = Table('songs_and_playlists', Base.metadata,
     Column('song_id', Integer, ForeignKey('songs.id')),
@@ -68,10 +74,10 @@ class Song(Base):
         return song
 
     def getJsonSelectively(self, fields):
-        song = {}
+        obj = {}
         for field in fields:
-            song[field] = getattr(self, field)
-        return song
+            obj[field] = getattr(self, field)
+        return obj
 
 class Playlist(Base):
     __tablename__ = "playlists"
@@ -92,7 +98,13 @@ class Playlist(Base):
     @property
     def getJson(self):
         playlist = {'name':self.name,'email':self.email,'songs':self.songs}
-        return user
+        return playlist
+
+    def getJsonSelectively(self, fields):
+        obj = {}
+        for field in fields:
+            obj[field] = getattr(self, field)
+        return obj
 
 # Create all non-existing tables
 # This can't update tables!
