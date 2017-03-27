@@ -3,6 +3,7 @@ import { Router, Route, hashHistory, IndexRoute} from 'react-router'
 import User from '../components/user';
 import Home from '../components/home';
 import Layout from '../layout/layout';
+import SongList from '../components/songlist';
 import './app.css';
 
 // See React-router tutorial at:
@@ -16,8 +17,10 @@ import './app.css';
 class App extends Component {
     constructor() {
         super();
-        this.state = {username: "", userid: ""}
+        this.state = {};
     }
+
+
 
   render() {
     return (
@@ -25,6 +28,7 @@ class App extends Component {
             <Route path="/" component={Layout}>
                 <IndexRoute component={Home}/>
                 <Route path="/user" component={User}/>
+                <Route path="/songs" component={SongList}/>
             </Route>
         </Router>
     );

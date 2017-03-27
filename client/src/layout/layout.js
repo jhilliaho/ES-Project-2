@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { Nav, Navbar, NavItem, NavDropdown, MenuItem} from 'react-bootstrap';
-import { Link } from 'react-router'
+import { Link } from 'react-router';
 import { LinkContainer } from 'react-router-bootstrap';
+import {Grid, Row, Col} from 'react-bootstrap';
 import './layout.css';
 
 // Use react-router-bootstrap wrapper in navbar:
@@ -9,18 +10,19 @@ import './layout.css';
 // This navbar includes the links to different modules.
 class Layout extends Component {
     constructor() {
-        super()
-        this.fetchUsername();
+        super();
         this.state = {'username': ""}
+        this.fetchUser();
     }
 
-    fetchUsername() {
+    fetchUser() {
 
         let result = fetch('http://localhost:3001/api/user', {mode: "cors", credentials: "include"})
         result.then((response) => {return response.text()})
             .then((res) => {
-                let user = JSON.parse(res)
+                let user = JSON.parse(res);
                 this.setState({username: user.name});
+                this.setState({email: user.email});
             })
             .catch(function(ex) {console.log('FAIL: ', ex)})
     }
@@ -36,6 +38,8 @@ class Layout extends Component {
                 </Navbar.Header>
 
                 <Nav>
+                    <NavItem href="#/songs">Songs</NavItem>
+
                     <NavDropdown title={this.state.username} id="basic-nav-dropdown">
                         <LinkContainer to="/user">
                             <MenuItem>Profile</MenuItem>
@@ -47,7 +51,15 @@ class Layout extends Component {
                     </NavDropdown>
                 </Nav>
             </Navbar>
-            {this.props.children}
+            <Grid>
+                <Row className="show-grid">
+                    <Col sm={12}>
+                        {this.props.children}
+                    </Col>
+                </Row>
+            </Grid>
+
+
         </span>
     );
   }

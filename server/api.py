@@ -45,7 +45,7 @@ def getSongs():
     session = Session()
 
     arr = []
-    fields = ["id", "title", "artist", "album", "release_year", "path", "creation_date", "user_id"]
+    fields = ["id", "title", "artist", "album", "release_year", "path", "user_id"]
     for song in session.query(Song).all(): arr.append(song.getJsonSelectively(fields))
     session.close()
     return arr
