@@ -29,11 +29,14 @@ def getUserById(id):
     fields = ["id", "email", "name"]
     return user.getJsonSelectively(fields)
 
-def updateUserById(id,name):
+def updateUserById(id,name,email):
     session = Session()
 
     user = session.query(User).filter(User.id==id).first()
-    user.name = name
+    if(name):
+        user.name = name
+    if(email):
+        user.email = email
 
     session.commit()
     session.close()

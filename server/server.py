@@ -161,9 +161,10 @@ def user():
     if flask.request.method == 'GET':
         return jsonify(api.getUserById(id))
     else:
-        name = request.args.get("name")
-        api.updateUserById(id,name)
-        return flask.redirect(flask.url_for('login'))
+        name = request.form["name"]
+        email = request.form["email"]
+        api.updateUserById(id,name,email)        
+        return flask.redirect(flask.url_for('index'))
 
 
 ### SONGS ###
