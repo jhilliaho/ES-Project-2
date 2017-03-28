@@ -20,6 +20,15 @@ def addUser(name,email,password):
     session.commit()
     session.close()
 
+def deleteUser(id):
+    session = Session()
+
+    user = session.query(User).filter(User.id==id).first()
+    
+    session.delete(user)
+    session.commit()
+    session.close()
+
 def getUserById(id):
     session = Session()
     user = session.query(User).filter(User.id==id).first()
