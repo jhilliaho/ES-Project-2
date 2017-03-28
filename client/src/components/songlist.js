@@ -1,16 +1,17 @@
 import React, { Component } from 'react';
-import {Table, Glyphicon, Button, Accordion, Col, Row, Panel, Form, ControlLabel, FormControl, FormGroup} from 'react-bootstrap';
+import {Table, Accordion, Panel, Form, ControlLabel, FormControl, FormGroup} from 'react-bootstrap';
 import './songlist.css';
 import AddSong from './addsong'
+import SongRow from './songrow'
 
 class SongList extends Component {
     constructor() {
         super();
-        this.state = {'songs': [], 'user_id': "", "artist": "", "album": "", "title": ""};
+        this.state = {'songs': [], 'user_id': "", "artist": "", "album": "", "title": "", 'songsToEdit': []};
+        this.fetchSongs = this.fetchSongs.bind(this);
+        this.handleChange = this.handleChange.bind(this);
         this.fetchSongs();
         this.fetchUser();
-        this.handleChange = this.handleChange.bind(this);
-        this.deleteSong = this.deleteSong.bind(this);
     }
 
     fetchSongs() {
@@ -35,24 +36,6 @@ class SongList extends Component {
             .catch(function(ex) {console.log('FAIL: ', ex)})
     }
 
-    deleteSong(e) {
-        let id = e.currentTarget.name;
-        console.log("Deleting", id);
-        e.preventDefault();
-
-        let result = fetch('http://localhost:3001/api/song/' + id,
-            {
-                method: "DELETE",
-                mode: "cors",
-                credentials: "include"
-            });
-        result.then((res) => {
-                console.log(res)
-                this.fetchSongs();
-            })
-            .catch(function(ex) {console.log('FAIL: ', ex)})
-    }
-
     handleChange(e) {
         this.setState({[e.target.name]:e.target.value.toLowerCase()});
     }
@@ -68,33 +51,12 @@ class SongList extends Component {
                 return;
             }
 
-            let edit = "";
+            el.owner = false;
             if (el.user_id === this.state.user_id) {
-                edit =
-                    <td>
-                        <a href="#" ><Glyphicon glyph="pencil" /></a>
-                        <a href="#" name={el.id} onClick={this.deleteSong}>
-                            <Glyphicon glyph="trash" />
-                        </a>
-                        <a href="#" ><Glyphicon glyph="plus" /></a>
-                    </td>
-            } else {
-                edit =
-                    <td>
-                        <a href="#" ><Glyphicon glyph="plus" /></a>
-                    </td>
+                el.owner = true;
             }
 
-            let row =
-                <tr key={el.id}>
-                    <td>{el.title}</td>
-                    <td>{el.artist}</td>
-                    <td>{el.album}</td>
-                    <td>{el.release_year}</td>
-                    {edit}
-                </tr>;
-
-            rows.push(row)
+            rows.push(<SongRow key={el.id} song={el} updateSongs={this.fetchSongs}/>)
         });
 
         return (
@@ -123,14 +85,14 @@ class SongList extends Component {
                     </Form>
 
 
-                    <Table fill striped bordered condensed hover>
+                    <Table fill striped bordered condensed>
                         <thead>
                         <tr>
                             <th>Title</th>
                             <th>Artist</th>
                             <th>Album</th>
                             <th>Release year</th>
-                            <th className="modify" >&nbsp;</th>
+                            <th>&nbsp;</th>
                         </tr>
                         </thead>
                         <tbody>

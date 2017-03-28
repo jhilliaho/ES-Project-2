@@ -82,6 +82,15 @@ def addSong(title, artist, album, year, user_id, file_extension):
     session.close()
     return path
 
-
+def updateSong(id, title, artist, album, release_year):
+    session = Session()
+    song = session.query(Song).filter(Song.id==id).first()
+    song.title = title
+    song.artist = artist
+    song.album = album
+    song.release_year = release_year
+    session.commit()
+    session.close()
+    return
 
 

@@ -219,7 +219,9 @@ def deleteSong(song_id):
 @app.route('/api/song/<song_id>', methods=["PUT"])
 @flask_login.login_required
 def updateSong(song_id):
-    pass
+    data = json.loads(request.data)
+    api.updateSong(song_id, data["title"],data["artist"],data["album"],data["release_year"],)
+    return "ok"
 
 
 
