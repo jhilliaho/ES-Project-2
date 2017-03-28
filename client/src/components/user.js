@@ -6,6 +6,7 @@ class User extends Component {
         super()
         this.fetchUser();
         this.state = {'username': "",'email': "",'password':"********"}
+        this.deleteUser = this.deleteUser.bind(this);
     }
 
     fetchUser() {
@@ -18,6 +19,13 @@ class User extends Component {
                 this.setState({email: user.email});
             })
             .catch(function(ex) {console.log('FAIL: ', ex)})
+    }
+    
+    deleteUser(){
+        fetch('http://localhost:3001/api/user', {mode: "cors", credentials: "include",method:"DELETE"}).then(
+                window.location.reload()
+            )
+
     }
 
     render() {
@@ -42,6 +50,7 @@ class User extends Component {
 			                    </div>
 			                    <button className="btn btn-primary">Submit changes</button>
 		                    </form>
+                            <button className="btn btn-danger" onClick={this.deleteUser}>Delete Account</button>
 			            </div>
 			        </div>
 			    </div>

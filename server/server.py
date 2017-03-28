@@ -4,6 +4,7 @@ from flask import Response
 from flask import jsonify
 from flask import request
 from flask import redirect
+from flask import make_response
 from flask import abort
 from flask_cors import CORS, cross_origin
 from flask import render_template
@@ -156,18 +157,25 @@ def test():
 #        #notification that user was added
 #        return flask.redirect(flask.url_for('login'))
 
-@app.route('/api/user', methods=["GET","POST"])
+@app.route('/api/user', methods=["GET","POST","DELETE"])
 @flask_login.login_required
 #@swag_from('swag/test.yml')
 def user():
     id = flask_login.current_user.id
     if flask.request.method == 'GET':
         return jsonify(api.getUserById(id))
-    else:
+    elif flask.request.method == 'POST':
+        print("post")
         name = request.form["name"]
         email = request.form["email"]
         api.updateUserById(id,name,email)        
         return flask.redirect(flask.url_for('index'))
+    else:
+        print("delete")
+        api.deleteUser(id)
+        flask_login.logout_user()
+        return "ok"
+
 
 
 ### SONGS ###
