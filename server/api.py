@@ -56,6 +56,12 @@ def getSongs():
 def getSongById():
     pass
 
+def getSongPath(song_id):
+    session = Session()
+    song = session.query(Song).filter(Song.id==song_id).first()
+    session.close()
+    return song.path
+
 def deleteSong(song_id, user_id):
     print("DELETING SONG", song_id, " BY USER ", user_id)
     session = Session()

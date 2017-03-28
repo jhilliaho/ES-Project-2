@@ -25,6 +25,12 @@ class SongRow extends Component {
         this.saveSong = this.saveSong.bind(this);
         this.discardSong = this.discardSong.bind(this);
         this.editSong = this.editSong.bind(this);
+        this.playSong = this.playSong.bind(this);
+    }
+
+    playSong(e){
+        let id = e.currentTarget.name;
+        window.open('http://localhost:3001/api/play/'+id, '_blank')
     }
 
     handleChange(e) {
@@ -102,6 +108,9 @@ class SongRow extends Component {
                     </a>
                     <a href="#" name={this.props.song.id} onClick={this.deleteSong}>
                         <Glyphicon glyph="trash" />
+                    </a>
+                    <a href="#/songs" name={this.props.song.id} onClick={this.playSong}>
+                        <Glyphicon glyph="play" />
                     </a>
                     <a href="#" ><Glyphicon glyph="plus" /></a>
                 </td>

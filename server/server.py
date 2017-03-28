@@ -1,5 +1,6 @@
 import flask
 from flask import Flask
+from flask import Response
 from flask import jsonify
 from flask import request
 from flask import redirect
@@ -16,6 +17,8 @@ import flask_login
 import configuration
 import os
 import api
+from functools import partial
+from subprocess import Popen, PIPE
 
 template_dir = os.path.abspath('../client/build')
 static_dir = os.path.abspath('../client/build/static')
@@ -198,7 +201,7 @@ def postSong():
         #TODO: check file type
 
         filename = api.addSong(request.form["title"],request.form["artist"],request.form["album"],request.form["year"], flask_login.current_user.id, file_extension)
-        file.save(os.path.join("uploads", filename))
+        file.save(os.path.join(os.path.abspath('../server/uploads'), filename))
         return flask.redirect(flask.url_for('index'))
 
     print("ERROR")
@@ -224,7 +227,13 @@ def updateSong(song_id):
     return "ok"
 
 
-
+@app.route('/api/play/<song_id>', methods=["GET"])
+def stream(song_id):
+    dir = os.path.abspath('../server/uploads')
+    filename = api.getSongPath(song_id)
+    process = Popen(['cat', os.path.join(dir,filename)], stdout=PIPE, bufsize=-1)
+    read_chunk = partial(os.read, process.stdout.fileno(), 1024)
+    return Response(iter(read_chunk, b''), mimetype='audio/mp3')
 
 
 
