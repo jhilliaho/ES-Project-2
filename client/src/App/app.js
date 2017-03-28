@@ -3,7 +3,8 @@ import { Router, Route, hashHistory, IndexRoute} from 'react-router'
 import User from '../components/user';
 import Home from '../components/home';
 import Layout from '../layout/layout';
-import SongList from '../components/songlist';
+import SongList from '../components/song/songlist';
+import Playlists from '../components/playlist/playlists';
 import './app.css';
 
 // See React-router tutorial at:
@@ -29,6 +30,7 @@ class App extends Component {
                 <IndexRoute component={Home}/>
                 <Route path="/user" component={User}/>
                 <Route path="/songs" component={SongList}/>
+                <Route path="/playlists" component={Playlists}/>
             </Route>
         </Router>
     );

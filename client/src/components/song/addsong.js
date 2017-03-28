@@ -16,17 +16,11 @@ class AddSong extends Component {
         super();
         this.state = {};
         this.handleChange = this.handleChange.bind(this);
-        this.addSong = this.addSong.bind(this);
     }
 
     handleChange(e) {
         this.setState({[e.target.name]:e.target.value});
         console.log("changed",e.target.name,"to",e.target.value);
-    }
-
-    addSong(e) {
-        console.log("AddSong")
-        e.preventDefault();
     }
 
     render() {

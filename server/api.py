@@ -53,9 +53,6 @@ def getSongs():
     session.close()
     return arr
 
-def getSongById():
-    pass
-
 def getSongPath(song_id):
     session = Session()
     song = session.query(Song).filter(Song.id==song_id).first()
@@ -63,7 +60,6 @@ def getSongPath(song_id):
     return song.path
 
 def deleteSong(song_id, user_id):
-    print("DELETING SONG", song_id, " BY USER ", user_id)
     session = Session()
     song = session.query(Song).filter(Song.id==song_id and Song.user_id==user_id).first()
     session.delete(song)
@@ -99,4 +95,36 @@ def updateSong(id, title, artist, album, release_year):
     session.close()
     return
 
+### PLAYLIST ###
 
+def getPlaylists(user_id):
+    session = Session()
+    arr = []
+    fields = ["id", "name"]
+    for playlist in session.query(Playlist).filter(Playlist.user_id == user_id): arr.append(playlist.getJsonSelectively(fields))
+    session.close()
+    return arr
+
+def addPlaylist(user_id, name):
+    print("ADDING PLAYLIST",user_id,name)
+    session = Session()
+    playlist = Playlist(name=name, user_id=user_id)
+    session.add(playlist)
+    session.commit()
+    session.close()
+
+def deletePlaylist(playlist_id, user_id):
+    session = Session()
+    song = session.query(Playlist).filter(Playlist.id == playlist_id and Playlist.user_id == user_id).first()
+    session.delete(song)
+    session.commit()
+    session.close()
+    return
+
+def updatePlaylist(id, name):
+    session = Session()
+    playlist = session.query(Playlist).filter(Playlist.id==id).first()
+    playlist.name = name
+    session.commit()
+    session.close()
+    return

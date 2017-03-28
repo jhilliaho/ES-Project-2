@@ -94,7 +94,7 @@ def register():
     if flask.request.method == 'GET':
         print("register")
         return render_template('register.html')
-    
+
     name = request.form['name']
     email = request.form['email']
     password = request.form['password']
@@ -166,7 +166,7 @@ def user():
     else:
         name = request.form["name"]
         email = request.form["email"]
-        api.updateUserById(id,name,email)        
+        api.updateUserById(id,name,email)
         return flask.redirect(flask.url_for('index'))
 
 
@@ -177,13 +177,6 @@ def user():
 @flask_login.login_required
 def getAllSongs():
     return jsonify(api.getSongs())
-
-# GET /api/song/id, returns one song, must be logged in
-@app.route('/api/song/<song_id>', methods=["GET"])
-@flask_login.login_required
-def getSong(song_id):
-    pass
-
 
 # TODO: Send files with ajax, not by form
 # POST /api/song, adds one song, must be logged in
@@ -208,15 +201,12 @@ def postSong():
     return abort(400)
 
 
-
-
 # DELETE /api/song/id, delete one song, must be logged in and the owner of the song
 @app.route('/api/song/<song_id>', methods=["DELETE"])
 @flask_login.login_required
 def deleteSong(song_id):
     api.deleteSong(song_id, flask_login.current_user.id)
     return "ok"
-
 
 # PUT /api/song/id, update song data, must be logged in and the owner of the song
 @app.route('/api/song/<song_id>', methods=["PUT"])
@@ -226,7 +216,42 @@ def updateSong(song_id):
     api.updateSong(song_id, data["title"],data["artist"],data["album"],data["release_year"],)
     return "ok"
 
+### PLAYLISTS ###
 
+# GET /api/playlist, returns all playlists of the user, must be logged in
+@app.route('/api/playlist', methods=["GET"])
+@flask_login.login_required
+def getAllPlaylists():
+    return jsonify(api.getPlaylists(flask_login.current_user.id))
+
+# POST /api/playlist, adds one playlist, must be logged in
+@app.route('/api/playlist', methods=["POST"])
+@flask_login.login_required
+def postPlaylist():
+    data = json.loads(request.data)
+    api.addPlaylist(flask_login.current_user.id, data["name"])
+    return "ok"
+
+
+
+# DELETE /api/playlist/id, delete one playlist, must be logged in and the owner of the playlist
+@app.route('/api/playlist/<playlist_id>', methods=["DELETE"])
+@flask_login.login_required
+def deletePlaylist(playlist_id):
+    api.deletePlaylist(playlist_id, flask_login.current_user.id)
+    return "ok"
+
+# PUT /api/playlist/id, update playlist data, must be logged in and the owner of the playlist
+@app.route('/api/playlist/<playlist_id>', methods=["PUT"])
+@flask_login.login_required
+def updatePlaylist(playlist_id):
+    data = json.loads(request.data)
+    api.updatePlaylist(playlist_id, data["name"])
+    return "ok"
+
+
+
+# FOR PLAYING MUSIC
 @app.route('/api/play/<song_id>', methods=["GET"])
 def stream(song_id):
     dir = os.path.abspath('../server/uploads')

@@ -39,6 +39,7 @@ class Layout extends Component {
 
                 <Nav>
                     <NavItem href="#/songs">Songs</NavItem>
+                    <NavItem href="#/playlists">Playlists</NavItem>
 
                     <NavDropdown title={this.state.username} id="basic-nav-dropdown">
                         <LinkContainer to="/user">
