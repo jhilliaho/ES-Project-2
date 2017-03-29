@@ -109,7 +109,23 @@ def updateSong(id, title, artist, album, release_year):
 def getPlaylists(user_id):
     session = Session()
     arr = []
-    fields = ["id", "name"]
+    fields = [
+        "id",
+        "name",
+        "creation_date",
+        {
+            "name":"songs",
+            "fields": [
+                "id",
+                "title",
+                "artist",
+                "album",
+                "release_year",
+                "creation_date"
+            ]
+        }
+    ]
+
     for playlist in session.query(Playlist).filter(Playlist.user_id == user_id): arr.append(playlist.getJsonSelectively(fields))
     session.close()
     return arr

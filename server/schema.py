@@ -1,5 +1,6 @@
 from flask import Flask
 from flask import jsonify
+import sqlalchemy
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String, Sequence, ForeignKey, Table, DateTime
@@ -39,7 +40,13 @@ class User(Base):
     def getJsonSelectively(self, fields):
         obj = {}
         for field in fields:
-            obj[field] = getattr(self, field)
+            if isinstance(field, str):
+                obj[field] = getattr(self, field)
+            else:
+                obj[field["name"]] = []
+                for item in getattr(self, field["name"]):
+                    obj[field["name"]].append(item.getJsonSelectively(field["fields"]))
+        print(obj)
         return obj
 
 # Association table for many-to-may relationship between songs and playlists
@@ -76,7 +83,13 @@ class Song(Base):
     def getJsonSelectively(self, fields):
         obj = {}
         for field in fields:
-            obj[field] = getattr(self, field)
+            if isinstance(field, str):
+                obj[field] = getattr(self, field)
+            else:
+                obj[field["name"]] = []
+                for item in getattr(self, field["name"]):
+                    obj[field["name"]].append(item.getJsonSelectively(field["fields"]))
+        print(obj)
         return obj
 
 class Playlist(Base):
@@ -103,7 +116,13 @@ class Playlist(Base):
     def getJsonSelectively(self, fields):
         obj = {}
         for field in fields:
-            obj[field] = getattr(self, field)
+            if isinstance(field, str):
+                obj[field] = getattr(self, field)
+            else:
+                obj[field["name"]] = []
+                for item in getattr(self, field["name"]):
+                    obj[field["name"]].append(item.getJsonSelectively(field["fields"]))
+        print(obj)
         return obj
 
 # Create all non-existing tables
