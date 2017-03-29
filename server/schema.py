@@ -17,6 +17,37 @@ engine = create_engine('mysql+mysqldb://' + configuration.username + ':' + confi
 
 app = Flask(__name__)
 
+
+def selectJson(self, fields):
+    obj = {}
+
+    # Traverse fields
+    for field in fields:
+
+        # If field is string, read property value
+        if isinstance(field, str):
+            obj[field] = getattr(self, field)
+
+            # If field is an object, serialize it
+        else:
+            # Read property value
+            child = getattr(self, field["name"])
+
+            # If the property is a list, serialize its objects
+            if isinstance(child, sqlalchemy.orm.collections.InstrumentedList):
+                obj[field["name"]] = []
+
+                # Serialize single objects
+                for item in child:
+                    obj[field["name"]].append(item.getJsonSelectively(field["fields"]))
+
+            # If the property is a single object, serialize it
+            else:
+                obj[field["name"]] = child.getJsonSelectively(field["fields"])
+
+    return obj
+
+
 class User(Base):
     __tablename__ = 'users'
 
@@ -37,17 +68,9 @@ class User(Base):
         user = {'name':self.name,'email':self.email}
         return user
 
-    def getJsonSelectively(self, fields):
-        obj = {}
-        for field in fields:
-            if isinstance(field, str):
-                obj[field] = getattr(self, field)
-            else:
-                obj[field["name"]] = []
-                for item in getattr(self, field["name"]):
-                    obj[field["name"]].append(item.getJsonSelectively(field["fields"]))
-        print(obj)
-        return obj
+    getJsonSelectively = selectJson
+
+
 
 # Association table for many-to-may relationship between songs and playlists
 songs_and_playlists = Table('songs_and_playlists', Base.metadata,
@@ -80,17 +103,8 @@ class Song(Base):
         song = {'title':self.title,'artist':self.artist,'album':self.album,'release_year':self.release_year,'path':self.path,'playlists':self.playlists}
         return song
 
-    def getJsonSelectively(self, fields):
-        obj = {}
-        for field in fields:
-            if isinstance(field, str):
-                obj[field] = getattr(self, field)
-            else:
-                obj[field["name"]] = []
-                for item in getattr(self, field["name"]):
-                    obj[field["name"]].append(item.getJsonSelectively(field["fields"]))
-        print(obj)
-        return obj
+    getJsonSelectively = selectJson
+
 
 class Playlist(Base):
     __tablename__ = "playlists"
@@ -113,17 +127,8 @@ class Playlist(Base):
         playlist = {'name':self.name,'email':self.email,'songs':self.songs}
         return playlist
 
-    def getJsonSelectively(self, fields):
-        obj = {}
-        for field in fields:
-            if isinstance(field, str):
-                obj[field] = getattr(self, field)
-            else:
-                obj[field["name"]] = []
-                for item in getattr(self, field["name"]):
-                    obj[field["name"]].append(item.getJsonSelectively(field["fields"]))
-        print(obj)
-        return obj
+    getJsonSelectively = selectJson
+
 
 # Create all non-existing tables
 # This can't update tables!

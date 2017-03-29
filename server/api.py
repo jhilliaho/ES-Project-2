@@ -121,7 +121,15 @@ def getPlaylists(user_id):
                 "artist",
                 "album",
                 "release_year",
-                "creation_date"
+                "creation_date",
+                {
+                    "name":"user",
+                    "fields": [
+                        "id",
+                        "name",
+                        "email"
+                    ]
+                }
             ]
         }
     ]
