@@ -1,32 +1,14 @@
-td {
-    vertical-align: middle !important;
+.playlistTitle {
+    display: inline;
 }
 
-.songProperty {
+.playlistProperty {
     width: 200px !important;
-    height: 45px;
-}
-
-.edit {
-
-}
-
-.glyphicon {
-    font-size: 130%;
-    margin-right: 10px;
-    color: black;
-    vertical-align:middle;
-    padding: 0px;
+    display: inline;
+    margin: 0;
 }
 
 .modify {
     color: black;
-}
-
-.filter {
-    margin-right: 40px;
-}
-
-.filterLabel {
-    margin-right: 10px;
+    width: 76px;
 }

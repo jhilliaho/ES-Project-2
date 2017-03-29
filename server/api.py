@@ -121,15 +121,7 @@ def getPlaylists(user_id):
                 "artist",
                 "album",
                 "release_year",
-                "creation_date",
-                {
-                    "name":"user",
-                    "fields": [
-                        "id",
-                        "name",
-                        "email"
-                    ]
-                }
+                "creation_date"
             ]
         }
     ]
@@ -139,7 +131,6 @@ def getPlaylists(user_id):
     return arr
 
 def addPlaylist(user_id, name):
-    print("ADDING PLAYLIST",user_id,name)
     session = Session()
     playlist = Playlist(name=name, user_id=user_id)
     session.add(playlist)
@@ -158,6 +149,36 @@ def updatePlaylist(id, name):
     session = Session()
     playlist = session.query(Playlist).filter(Playlist.id==id).first()
     playlist.name = name
+    session.commit()
+    session.close()
+    return
+
+# 73 100
+def addSongToPlaylist(song_id, playlist_id):
+    session = Session()
+    playlist = session.query(Playlist).filter(Playlist.id==playlist_id).first()
+    song = session.query(Song).filter(Song.id==song_id).first()
+
+    if(not song in playlist.songs):
+        playlist.songs.append(song)
+
+    session.commit()
+    session.close()
+    return
+
+def removeSongFromPlaylist(song_id, playlist_id):
+    session = Session()
+    playlist = session.query(Playlist).filter(Playlist.id==playlist_id).first()
+
+    print("Removing")
+    print(len(playlist.songs))
+
+    for song in playlist.songs:
+        print(song.id)
+
+    playlist.songs = [song for song in playlist.songs if str(song.id) != str(song_id)]
+    print(len(playlist.songs))
+
     session.commit()
     session.close()
     return

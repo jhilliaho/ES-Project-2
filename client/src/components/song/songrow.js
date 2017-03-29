@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { FormGroup, ControlLabel, Glyphicon, FormControl } from 'react-bootstrap';
+import { FormGroup, ControlLabel, Glyphicon, FormControl, Popover, OverlayTrigger } from 'react-bootstrap';
 import './songrow.css';
 
 function FieldGroup({ id, label, help, ...props }) {
@@ -19,6 +19,7 @@ class SongRow extends Component {
         super(props);
         this.state = this.props.song;
         this.state.edited = false;
+        this.state.playlists = [];
 
         this.handleChange = this.handleChange.bind(this);
         this.deleteSong = this.deleteSong.bind(this);
@@ -26,6 +27,8 @@ class SongRow extends Component {
         this.discardSong = this.discardSong.bind(this);
         this.editSong = this.editSong.bind(this);
         this.playSong = this.playSong.bind(this);
+        this.getPlaylists = this.getPlaylists.bind(this);
+        this.addSongToPlaylist = this.addSongToPlaylist.bind(this);
     }
 
     playSong(e){
@@ -90,14 +93,66 @@ class SongRow extends Component {
         this.setState({"edited":false});
     }
 
+    getPlaylists(e) {
+        console.log("Shit happens")
+        e.preventDefault();
 
+        let result = fetch('http://localhost:3001/api/playlist',
+            {
+                method: "GET",
+                mode: "cors",
+                credentials: "include",
+            });
+        result.then((res) => {
+            res.json().then(json => {
+                console.log(json);
+                this.setState({"playlists":json})
+            })
+
+        })
+            .catch(function(ex) {console.log('FAIL: ', ex)})
+
+    }
+
+    addSongToPlaylist(e) {
+        let song_id = String(this.state.id);
+        let playlist_id = e.target.name;
+        e.preventDefault();
+        console.log("Shit happens")
+        e.preventDefault();
+
+        let result = fetch('http://localhost:3001/api/playlist/' + playlist_id + '/songs/' + song_id,
+            {
+                method: "POST",
+                mode: "cors",
+                credentials: "include",
+            });
+        result.then((res) => {
+            console.log("Added")
+            this.refs.addSongToPlaylistPopover.hide();
+        })
+            .catch(function(ex) {console.log('FAIL: ', ex)})
+    }
 
     render() {
 
 
+        let playlists = [];
+        this.state.playlists.forEach((el) => {
+            playlists.push(<a key={el.id} name={el.id} href="#" onClick={this.addSongToPlaylist}>{el.name}</a>)
+        });
+
+        const popover = (
+            <Popover id="popover-positioned-right" title="Add song to playlist">
+                {playlists}
+            </Popover>
+        );
+
         let buttons =
             <td className="modify">
-                <a href="#" ><Glyphicon glyph="plus" /></a>
+                <OverlayTrigger ref="addSongToPlaylistPopover" trigger="click" placement="left" overlay={popover}>
+                    <a href="#" onClick={this.getPlaylists}><Glyphicon glyph="plus" /></a>
+                </OverlayTrigger>
             </td>;
 
         if (this.props.song.owner) {
@@ -112,9 +167,23 @@ class SongRow extends Component {
                     <a href="#/songs" name={this.props.song.id} onClick={this.playSong}>
                         <Glyphicon glyph="play" />
                     </a>
-                    <a href="#" ><Glyphicon glyph="plus" /></a>
+
+
+                    <OverlayTrigger ref="addSongToPlaylistPopover" trigger="click" placement="left" overlay={popover}>
+                        <a href="#" onClick={this.getPlaylists}><Glyphicon glyph="plus" /></a>
+                    </OverlayTrigger>
+
                 </td>
         }
+
+
+
+
+
+
+
+
+
 
         let submit =
             <td className="modify">

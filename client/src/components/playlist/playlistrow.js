@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { FormGroup, ControlLabel, Glyphicon, FormControl } from 'react-bootstrap';
+import { FormGroup, ControlLabel, Glyphicon, FormControl, Panel } from 'react-bootstrap';
 import './playlistrow.css';
+import SongList from './songlist'
 
 function FieldGroup({ id, label, help, ...props }) {
     return (
@@ -19,6 +20,7 @@ class PlayListRow extends Component {
         super(props);
         this.state = this.props.playlist;
         this.state.edited = false;
+        this.state.showSongs = false;
 
         this.handleChange = this.handleChange.bind(this);
         this.deletePlaylist = this.deletePlaylist.bind(this);
@@ -26,6 +28,13 @@ class PlayListRow extends Component {
         this.discardPlaylist = this.discardPlaylist.bind(this);
         this.editPlaylist = this.editPlaylist.bind(this);
         this.playPlaylist = this.playPlaylist.bind(this);
+        this.showSongList = this.showSongList.bind(this);
+    }
+
+    showSongList(e) {
+        e.preventDefault();
+        let show = (e.currentTarget.name == "show");
+        this.setState({'showSongs': show})
     }
 
     playPlaylist(e){
@@ -86,55 +95,68 @@ class PlayListRow extends Component {
 
     discardPlaylist(e) {
         e.preventDefault();
+        let showSongs = this.state.showSongs;
         this.setState(this.props.playlist);
-        this.setState({"edited":false});
+        this.setState({"edited":false, "showSongs": showSongs});
     }
 
 
 
     render() {
-
-
-
+        let chevron = <a href="#" name="show" onClick={this.showSongList}><Glyphicon glyph="chevron-up"/></a>;
+        if (this.state.showSongs) {
+            chevron = <a href="#" name="hide" onClick={this.showSongList}><Glyphicon glyph="chevron-down"/></a>;
+        }
 
         let buttons =
-            <td className="modify">
+            <span className="modify pull-right">
                 <a href="#" name={this.props.playlist.id} onClick={this.editPlaylist}>
                     <Glyphicon glyph="pencil" />
                 </a>
                 <a href="#" name={this.props.playlist.id} onClick={this.deletePlaylist}>
                     <Glyphicon glyph="trash" />
                 </a>
-            </td>
+            </span>;
+
 
         let submit =
-            <td className="modify">
+            <span className="modify pull-right">
                 <a href="#" name={this.props.playlist.id} onClick={this.discardPlaylist}>
                     <Glyphicon glyph="remove" />
                 </a>
                 <a href="#" name={this.props.playlist.id} onClick={this.savePlaylist}>
                     <Glyphicon glyph="ok" />
                 </a>
-            </td>;
+            </span>;
 
         let row =
-            <tr>
-                <td className="playlistProperty">{this.props.playlist.name}</td>
-                {buttons}
-            </tr>;
+                <div>
+                    {chevron}
+                    <h4 className="playlistTitle">
+                        {this.props.playlist.name}
+                    </h4>
+                    {buttons}
+                </div>;
 
         if (this.state.edited) {
             row =
-                <tr>
-                    <td className="playlistProperty">
-                        <FormControl name="name" type="text" placeholder="Enter a name"  value={this.state.name} onChange={this.handleChange}/>
-                    </td>
+                <div>
+                    {chevron}
+                    <FormControl  className="playlistProperty" name="name" type="text" placeholder="Enter a name"  value={this.state.name} onChange={this.handleChange}/>
                     {submit}
-                </tr>;
+                </div>
+        }
+
+        let songList = null;
+        if (this.state.showSongs) {
+            songList = <SongList playlistId={this.props.playlist.id} songs={this.props.playlist.songs} updatePlaylists={this.props.updatePlaylists}/>
         }
 
         return (
-            row
+            <Panel>
+                {row}
+                {songList}
+            </Panel>
         );
     }
 }

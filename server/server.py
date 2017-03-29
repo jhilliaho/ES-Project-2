@@ -240,8 +240,6 @@ def postPlaylist():
     api.addPlaylist(flask_login.current_user.id, data["name"])
     return "ok"
 
-
-
 # DELETE /api/playlist/id, delete one playlist, must be logged in and the owner of the playlist
 @app.route('/api/playlist/<playlist_id>', methods=["DELETE"])
 @flask_login.login_required
@@ -257,6 +255,20 @@ def updatePlaylist(playlist_id):
     api.updatePlaylist(playlist_id, data["name"])
     return "ok"
 
+# POST /api/playlist/<playlist_id>/songs/<song_id>, add song to playlist, must be logged in and the owner of the playlist
+@app.route('/api/playlist/<playlist_id>/songs/<song_id>', methods=["POST"])
+@flask_login.login_required
+def addSongToPlaylist(playlist_id, song_id):
+    api.addSongToPlaylist(song_id, playlist_id)
+    return "ok"
+
+# DELETE /api/playlist/<playlist_id>/songs/<song_id>, remove song from playlist, must be logged in and the owner of the playlist
+@app.route('/api/playlist/<playlist_id>/songs/<song_id>', methods=["DELETE"])
+@flask_login.login_required
+def removeSongFromPlaylist(playlist_id, song_id):
+    print("\n\nREMOVE SONG FROM PLAYLIST", playlist_id, song_id, "\n\n")
+    api.removeSongFromPlaylist(song_id, playlist_id)
+    return "ok"
 
 
 # FOR PLAYING MUSIC
@@ -267,7 +279,6 @@ def stream(song_id):
     process = Popen(['cat', os.path.join(dir,filename)], stdout=PIPE, bufsize=-1)
     read_chunk = partial(os.read, process.stdout.fileno(), 1024)
     return Response(iter(read_chunk, b''), mimetype='audio/mp3')
-
 
 
 
