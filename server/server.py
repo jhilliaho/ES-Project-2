@@ -292,7 +292,7 @@ def stream(song_id):
 
 if __name__ == '__main__':
     if deploy:
-        app.run()
+        app.run(host="localhost", port=3001)
     else:
         app.debug = True
         app.run(host="localhost", port=3001)
