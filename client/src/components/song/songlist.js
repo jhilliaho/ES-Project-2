@@ -69,7 +69,7 @@ class SongList extends Component {
                         <AddSong/>
                     </Panel>
                 </Accordion>
-                <audio ref="audio_tag" src="http://localhost:3001/api/play/97" controls autoplay="true"/>
+                <audio ref="audio_tag" src="http://localhost:3001/api/play/7" controls autoplay="true"/>
                 <Panel>
                     <Form inline>
                         <FormGroup className="filter">

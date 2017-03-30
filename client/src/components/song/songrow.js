@@ -76,6 +76,7 @@ class SongRow extends Component {
             {
                 method: "PUT",
                 mode: "cors",
+                headers:{'content-type': 'application/json'},
                 credentials: "include",
                 body: JSON.stringify(this.state)
             });
@@ -125,6 +126,7 @@ class SongRow extends Component {
             {
                 method: "POST",
                 mode: "cors",
+                headers:{'content-type': 'application/json'},
                 credentials: "include",
             });
         result.then((res) => {
