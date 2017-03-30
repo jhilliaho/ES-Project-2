@@ -83,6 +83,7 @@ class PlayListRow extends Component {
                 method: "PUT",
                 mode: "cors",
                 credentials: "include",
+                headers:{'content-type': 'application/json'},
                 body: JSON.stringify(this.state)
             });
         result.then((res) => {
