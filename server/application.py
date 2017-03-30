@@ -24,8 +24,8 @@ from subprocess import Popen, PIPE
 deploy = True
 
 if deploy:
-    template_dir = os.path.abspath('./build')
-    static_dir = os.path.abspath('./build/static')
+    template_dir = os.path.abspath('./templates')
+    static_dir = os.path.abspath('./static')
 else:
     template_dir = os.path.abspath('../client/build')
     static_dir = os.path.abspath('../client/build/static')
