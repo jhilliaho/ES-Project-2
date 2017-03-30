@@ -21,14 +21,20 @@ import api
 from functools import partial
 from subprocess import Popen, PIPE
 
-template_dir = os.path.abspath('../client/build')
-static_dir = os.path.abspath('../client/build/static')
+deploy = True
+
+if deploy:
+    template_dir = os.path.abspath('./build')
+    static_dir = os.path.abspath('./build/static')
+else:
+    template_dir = os.path.abspath('../client/build')
+    static_dir = os.path.abspath('../client/build/static')
+
 
 app = Flask(__name__,template_folder=template_dir,static_folder=static_dir)
 Swagger(app)
 
-#Added for faster react development as python api cant be accessed from react when its running own server
-CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000"}}, supports_credentials=True)
+CORS(app)
 
 ### AUTHENTICATION STARTS ###
 # https://flask-login.readthedocs.io/en/latest/
@@ -202,7 +208,7 @@ def postSong():
         #TODO: check file type
 
         filename = api.addSong(request.form["title"],request.form["artist"],request.form["album"],request.form["year"], flask_login.current_user.id, file_extension)
-        file.save(os.path.join(os.path.abspath('../server/uploads'), filename))
+        file.save(os.path.join(os.path.abspath('./uploads'), filename))
         return flask.redirect(flask.url_for('index'))
 
     print("ERROR")
@@ -274,7 +280,7 @@ def removeSongFromPlaylist(playlist_id, song_id):
 # FOR PLAYING MUSIC
 @app.route('/api/play/<song_id>', methods=["GET"])
 def stream(song_id):
-    dir = os.path.abspath('../server/uploads')
+    dir = os.path.abspath('./uploads')
     filename = api.getSongPath(song_id)
     process = Popen(['cat', os.path.join(dir,filename)], stdout=PIPE, bufsize=-1)
     read_chunk = partial(os.read, process.stdout.fileno(), 1024)
@@ -285,7 +291,11 @@ def stream(song_id):
 ### ROUTING ENDS ###
 
 if __name__ == '__main__':
-    app.run(host="localhost", port=3001)
+    if deploy:
+        app.run()
+    else:
+        app.debug = True
+        app.run(host="localhost", port=3001)
 
 
 # database connection and schema

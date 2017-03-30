@@ -3,6 +3,7 @@ import {Table, Accordion, Panel, Form, ControlLabel, FormControl, FormGroup} fro
 import './songlist.css';
 import AddSong from './addsong'
 import SongRow from './songrow'
+var Sound = require('react-sound');
 
 class SongList extends Component {
     constructor() {
@@ -68,6 +69,7 @@ class SongList extends Component {
                         <AddSong/>
                     </Panel>
                 </Accordion>
+                <audio ref="audio_tag" src="http://localhost:3001/api/play/97" controls autoplay="true"/>
                 <Panel>
                     <Form inline>
                         <FormGroup className="filter">
