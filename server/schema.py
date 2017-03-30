@@ -13,7 +13,7 @@ from flask import jsonify
 Base = declarative_base()
 
 # Create db engine with username, password, db address and db name
-engine = create_engine('mysql+mysqldb://' + configuration.username + ':' + configuration.password + '@' + configuration.db_host + '/' + configuration.db_name, echo=True)
+engine = create_engine('mysql+mysqldb://' + configuration.username + ':' + configuration.password + '@' + configuration.db_host + '/' + configuration.db_name)
 
 app = Flask(__name__)
 

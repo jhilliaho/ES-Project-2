@@ -21,9 +21,14 @@ import api
 from functools import partial
 from subprocess import Popen, PIPE
 
+# RUN SEED ON EVERY LAUNCH
 import db_seed
 
-deploy = False
+import logging
+logging.basicConfig(filename='flask.log',level=logging.DEBUG)
+logging.debug('This is from flask!!')
+
+deploy = True
 
 if deploy:
     template_dir = os.path.abspath('./templates')
@@ -61,6 +66,7 @@ class User(flask_login.UserMixin):
 # This function returns a User object based on the user id
 @login_manager.user_loader
 def user_loader(id):
+    logging.debug('User loader: loading user', id)
 
     u = [user for user in api.getUsers() if str(user.id) == str(id)]
 
@@ -78,10 +84,13 @@ def user_loader(id):
 @app.route('/login', methods=['POST', 'GET'])
 def login():
     if flask.request.method == 'GET':
+        logging.debug('GET login')
         return render_template('login.html')
 
     email = request.form['email']
     password = request.form['password']
+
+    logging.debug('POST login with ', email, password)
 
     print("Trying to log in user", email, password)
 
@@ -103,12 +112,15 @@ def login():
 @app.route('/register', methods=['POST', 'GET'])
 def register():
     if flask.request.method == 'GET':
-        print("register")
+        logging.debug('GET register')
         return render_template('register.html')
 
     name = request.form['name']
     email = request.form['email']
     password = request.form['password']
+
+    logging.debug('POST register with ', name, email, password)
+
     password = pbkdf2_sha256.hash(password)
 
     api.addUser(name,email,password)
@@ -117,12 +129,16 @@ def register():
 
 @app.route('/logout', methods=['POST', 'GET'])
 def logout():
+    logging.debug('Logout')
+
     flask_login.logout_user()
     return flask.redirect(flask.url_for('login'))
 
 # Redirect unauthorized requests to the login page
 @login_manager.unauthorized_handler
 def unauthorized():
+    logging.debug('Unauthorized')
+
     if flask.request.method == 'GET':
         return flask.redirect(flask.url_for('login'))
     else:
@@ -135,10 +151,14 @@ def unauthorized():
 @app.route('/', methods=["GET"])
 @flask_login.login_required
 def index():
+    logging.debug('GET index')
+
     return render_template('index.html')
 
 @app.route("/api/spec")
 def spec():
+    logging.debug('GET api/spec')
+
     return jsonify(swagger(app))
 
 
@@ -149,6 +169,7 @@ def spec():
 @flask_login.login_required
 @swag_from('swag/test.yml')
 def test():
+    logging.debug('GET api/test')
     return api.read()
 
 # i dont know if we need these routes...
@@ -173,14 +194,17 @@ def test():
 def user():
     id = flask_login.current_user.id
     if flask.request.method == 'GET':
+        logging.debug('GET api/user')
         return jsonify(api.getUserById(id))
     elif flask.request.method == 'POST':
+        logging.debug('POST api/user')
         print("post")
         name = request.form["name"]
         email = request.form["email"]
         api.updateUserById(id,name,email)
         return flask.redirect(flask.url_for('index'))
     else:
+        logging.debug('DELETE api/user')
         print("delete")
         api.deleteUser(id)
         flask_login.logout_user()
@@ -194,6 +218,7 @@ def user():
 @app.route('/api/song', methods=["GET"])
 @flask_login.login_required
 def getAllSongs():
+    logging.debug('GET api/song')
     return jsonify(api.getSongs())
 
 # TODO: Send files with ajax, not by form
@@ -201,18 +226,31 @@ def getAllSongs():
 @app.route('/api/song', methods=["POST"])
 @flask_login.login_required
 def postSong():
+    logging.debug('POST api/song')
     print("ADD SONG")
     print(request.form)
+    logging.debug(request.form)
 
     fileOk = False
 
     file = request.files['file']
+    logging.debug(file)
+
     if file.filename != '' and file:
         file_extension = file.filename.split('.')[-1]
         #TODO: check file type
+        logging.debug(file_extension)
 
         filename = api.addSong(request.form["title"],request.form["artist"],request.form["album"],request.form["year"], flask_login.current_user.id, file_extension)
-        file.save(os.path.join(os.path.abspath('./uploads'), filename))
+        logging.debug(filename)
+
+        try:
+            file.save(os.path.join(os.path.abspath('./uploads'), filename))
+        except Exception as e:
+            logging.debug("Saving unsuccessful", type(e).__name__)
+
+        logging.debug("File saved")
+
         return flask.redirect(flask.url_for('index'))
 
     print("ERROR")
@@ -223,6 +261,7 @@ def postSong():
 @app.route('/api/song/<song_id>', methods=["DELETE"])
 @flask_login.login_required
 def deleteSong(song_id):
+    logging.debug('DELETE api/song')
     api.deleteSong(song_id, flask_login.current_user.id)
     return "ok"
 
@@ -230,6 +269,7 @@ def deleteSong(song_id):
 @app.route('/api/song/<song_id>', methods=["PUT"])
 @flask_login.login_required
 def updateSong(song_id):
+    logging.debug('PUT api/song')
     data = json.loads(request.data)
     api.updateSong(song_id, data["title"],data["artist"],data["album"],data["release_year"],)
     return "ok"
@@ -240,12 +280,14 @@ def updateSong(song_id):
 @app.route('/api/playlist', methods=["GET"])
 @flask_login.login_required
 def getAllPlaylists():
+    logging.debug('GET api/playlist')
     return jsonify(api.getPlaylists(flask_login.current_user.id))
 
 # POST /api/playlist, adds one playlist, must be logged in
 @app.route('/api/playlist', methods=["POST"])
 @flask_login.login_required
 def postPlaylist():
+    logging.debug('POST api/playlist')
     data = json.loads(request.data)
     api.addPlaylist(flask_login.current_user.id, data["name"])
     return "ok"
@@ -254,6 +296,7 @@ def postPlaylist():
 @app.route('/api/playlist/<playlist_id>', methods=["DELETE"])
 @flask_login.login_required
 def deletePlaylist(playlist_id):
+    logging.debug('DELETE api/playlist/id')
     api.deletePlaylist(playlist_id, flask_login.current_user.id)
     return "ok"
 
@@ -261,6 +304,7 @@ def deletePlaylist(playlist_id):
 @app.route('/api/playlist/<playlist_id>', methods=["PUT"])
 @flask_login.login_required
 def updatePlaylist(playlist_id):
+    logging.debug('PUT api/playlist/id')
     data = json.loads(request.data)
     api.updatePlaylist(playlist_id, data["name"])
     return "ok"
@@ -269,6 +313,7 @@ def updatePlaylist(playlist_id):
 @app.route('/api/playlist/<playlist_id>/songs/<song_id>', methods=["POST"])
 @flask_login.login_required
 def addSongToPlaylist(playlist_id, song_id):
+    logging.debug('POST /api/playlist/<playlist_id>/songs/<song_id>')
     api.addSongToPlaylist(song_id, playlist_id)
     return "ok"
 
@@ -276,6 +321,7 @@ def addSongToPlaylist(playlist_id, song_id):
 @app.route('/api/playlist/<playlist_id>/songs/<song_id>', methods=["DELETE"])
 @flask_login.login_required
 def removeSongFromPlaylist(playlist_id, song_id):
+    logging.debug('DELETE /api/playlist/<playlist_id>/songs/<song_id>')
     print("\n\nREMOVE SONG FROM PLAYLIST", playlist_id, song_id, "\n\n")
     api.removeSongFromPlaylist(song_id, playlist_id)
     return "ok"
@@ -284,6 +330,7 @@ def removeSongFromPlaylist(playlist_id, song_id):
 # FOR PLAYING MUSIC
 @app.route('/api/play/<song_id>', methods=["GET"])
 def stream(song_id):
+    logging.debug('GET /api/play/<song_id>')
     dir = os.path.abspath('./uploads')
     filename = api.getSongPath(song_id)
     process = Popen(['cat', os.path.join(dir,filename)], stdout=PIPE, bufsize=-1)
@@ -296,6 +343,7 @@ def stream(song_id):
 
 if __name__ == '__main__':
     if deploy:
+        application.debug = True
         application.run()
     else:
         application.debug = True
