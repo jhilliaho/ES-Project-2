@@ -19,7 +19,7 @@ class AddPlaylist extends Component {
         console.log("AddPlaylist")
         e.preventDefault();
 
-        let result = fetch('http://localhost:3001/api/playlist',
+        let result = fetch('/api/playlist',
             {
                 method: "POST",
                 mode: "cors",

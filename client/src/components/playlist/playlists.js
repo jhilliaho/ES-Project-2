@@ -14,7 +14,7 @@ class Playlists extends Component {
     }
 
     fetchPlaylists() {
-        let result = fetch('http://localhost:3001/api/playlist', {mode: "cors", credentials: "include"})
+        let result = fetch('/api/playlist', {mode: "cors", credentials: "include"})
         result.then((response) => {return response.text()})
             .then((res) => {
                 let playlists = JSON.parse(res);
@@ -25,7 +25,7 @@ class Playlists extends Component {
     }
 
     fetchUser() {
-        let result = fetch('http://localhost:3001/api/user', {mode: "cors", credentials: "include"})
+        let result = fetch('/api/user', {mode: "cors", credentials: "include"})
         result.then((response) => {return response.text()})
             .then((res) => {
                 let user = JSON.parse(res);

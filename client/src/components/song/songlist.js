@@ -17,7 +17,7 @@ class SongList extends Component {
 
     fetchSongs() {
 
-        let result = fetch('http://localhost:3001/api/song', {mode: "cors", credentials: "include"})
+        let result = fetch('/api/song', {mode: "cors", credentials: "include"})
         result.then((response) => {return response.text()})
             .then((res) => {
                 let songs = JSON.parse(res);
@@ -28,7 +28,7 @@ class SongList extends Component {
 
     fetchUser() {
 
-        let result = fetch('http://localhost:3001/api/user', {mode: "cors", credentials: "include"})
+        let result = fetch('/api/user', {mode: "cors", credentials: "include"})
         result.then((response) => {return response.text()})
             .then((res) => {
                 let user = JSON.parse(res);
@@ -69,7 +69,7 @@ class SongList extends Component {
                         <AddSong/>
                     </Panel>
                 </Accordion>
-                <audio ref="audio_tag" src="http://localhost:3001/api/play/97" controls autoplay="true"/>
+                <audio ref="audio_tag" src="api/play/97" controls autoplay="true"/>
                 <Panel>
                     <Form inline>
                         <FormGroup className="filter">

@@ -39,7 +39,7 @@ class PlayListRow extends Component {
 
     playPlaylist(e){
         let id = e.currentTarget.name;
-        window.open('http://localhost:3001/api/play/'+id, '_blank')
+        window.open('api/play/'+id, '_blank')
     }
 
     handleChange(e) {
@@ -52,7 +52,7 @@ class PlayListRow extends Component {
         console.log("Deleting", id);
         e.preventDefault();
 
-        let result = fetch('http://localhost:3001/api/playlist/' + id,
+        let result = fetch('/api/playlist/' + id,
             {
                 method: "DELETE",
                 mode: "cors",
@@ -78,7 +78,7 @@ class PlayListRow extends Component {
 
         console.log(this.state)
 
-        let result = fetch('http://localhost:3001/api/playlist/' + id,
+        let result = fetch('/api/playlist/' + id,
             {
                 method: "PUT",
                 mode: "cors",

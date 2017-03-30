@@ -11,7 +11,7 @@ class User extends Component {
 
     fetchUser() {
 
-        let result = fetch('http://localhost:3001/api/user', {mode: "cors", credentials: "include"})
+        let result = fetch('/api/user', {mode: "cors", credentials: "include"})
         result.then((response) => {return response.text()})
             .then((res) => {
                 let user = JSON.parse(res)
@@ -20,9 +20,9 @@ class User extends Component {
             })
             .catch(function(ex) {console.log('FAIL: ', ex)})
     }
-    
+
     deleteUser(){
-        fetch('http://localhost:3001/api/user', {mode: "cors", credentials: "include",method:"DELETE"}).then(
+        fetch('/api/user', {mode: "cors", credentials: "include",method:"DELETE"}).then(
                 window.location.reload()
             )
 

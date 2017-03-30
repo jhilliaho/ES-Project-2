@@ -21,7 +21,9 @@ import api
 from functools import partial
 from subprocess import Popen, PIPE
 
-deploy = True
+import db_seed
+
+deploy = False
 
 if deploy:
     template_dir = os.path.abspath('./templates')
