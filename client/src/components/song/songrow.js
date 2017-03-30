@@ -33,7 +33,7 @@ class SongRow extends Component {
 
     playSong(e){
         let id = e.currentTarget.name;
-        window.open('http://localhost:3001/api/play/'+id, '_blank')
+        window.open('api/play/'+id, '_blank')
     }
 
     handleChange(e) {
@@ -46,7 +46,7 @@ class SongRow extends Component {
         console.log("Deleting", id);
         e.preventDefault();
 
-        let result = fetch('http://localhost:3001/api/song/' + id,
+        let result = fetch('/api/song/' + id,
             {
                 method: "DELETE",
                 mode: "cors",
@@ -72,7 +72,7 @@ class SongRow extends Component {
 
         console.log(this.state)
 
-        let result = fetch('http://localhost:3001/api/song/' + id,
+        let result = fetch('/api/song/' + id,
             {
                 method: "PUT",
                 mode: "cors",
@@ -98,7 +98,7 @@ class SongRow extends Component {
         console.log("Shit happens")
         e.preventDefault();
 
-        let result = fetch('http://localhost:3001/api/playlist',
+        let result = fetch('/api/playlist',
             {
                 method: "GET",
                 mode: "cors",
@@ -122,7 +122,7 @@ class SongRow extends Component {
         console.log("Shit happens")
         e.preventDefault();
 
-        let result = fetch('http://localhost:3001/api/playlist/' + playlist_id + '/songs/' + song_id,
+        let result = fetch('/api/playlist/' + playlist_id + '/songs/' + song_id,
             {
                 method: "POST",
                 mode: "cors",

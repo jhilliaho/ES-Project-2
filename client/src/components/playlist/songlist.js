@@ -15,7 +15,7 @@ class SongList extends Component {
         console.log("Deleting", id);
         e.preventDefault();
 
-        let result = fetch('http://localhost:3001/api/playlist/' + this.props.playlistId + "/songs/" + id,
+        let result = fetch('/api/playlist/' + this.props.playlistId + "/songs/" + id,
             {
                 method: "DELETE",
                 mode: "cors",
