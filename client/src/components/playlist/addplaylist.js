@@ -24,6 +24,7 @@ class AddPlaylist extends Component {
                 method: "POST",
                 mode: "cors",
                 credentials: "include",
+                headers:{'content-type': 'application/json'},
                 body: JSON.stringify({"name":this.state.name})
             });
         result.then((res) => {
