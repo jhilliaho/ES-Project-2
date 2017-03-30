@@ -133,7 +133,9 @@ class PlayListRow extends Component {
                 <div>
                     {chevron}
                     <h4 className="playlistTitle">
-                        {this.props.playlist.name}
+                        {this.props.playlist.name} &nbsp;-&nbsp;
+                        {this.props.playlist.creation_date} &nbsp;-&nbsp;
+                        {this.props.playlist.songs.length}
                     </h4>
                     {buttons}
                 </div>;

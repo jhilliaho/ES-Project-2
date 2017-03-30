@@ -36,6 +36,8 @@ Swagger(app)
 
 CORS(app)
 
+application = app
+
 ### AUTHENTICATION STARTS ###
 # https://flask-login.readthedocs.io/en/latest/
 # Most useful features of flask-login:
@@ -292,10 +294,10 @@ def stream(song_id):
 
 if __name__ == '__main__':
     if deploy:
-        app.run(host="localhost", port=3001)
+        application.run()
     else:
-        app.debug = True
-        app.run(host="localhost", port=3001)
+        application.debug = True
+        application.run(host="localhost", port=3001)
 
 
 # database connection and schema

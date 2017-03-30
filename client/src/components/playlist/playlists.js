@@ -43,14 +43,16 @@ class Playlists extends Component {
 
         return (
             <div className="playlists">
+                <h3>Playlists</h3>
                 <Accordion>
-                    <Panel header="Add a new playlist">
+                    <Panel header="Add a new playlist" eventKey="1">
                         <AddPlaylist updatePlaylists={this.fetchPlaylists}/>
                     </Panel>
                 </Accordion>
 
-                <h3>Playlists</h3>
-
+                <Panel header="Sort by" eventKey="1">
+                    Form
+                </Panel>
                 {rows}
 
             </div>
