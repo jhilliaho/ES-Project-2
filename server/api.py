@@ -2,6 +2,7 @@ from schema import *
 from flask import jsonify
 from passlib.hash import pbkdf2_sha256
 import json
+import os
 
 import logging
 logging.basicConfig(filename='flask.log',level=logging.DEBUG)
@@ -30,8 +31,19 @@ def deleteUser(id):
     session = Session()
 
     user = session.query(User).filter(User.id==id).first()
+    songs = session.query(Song).filter(Playlist.user_id == id).all()
     
+    #songs = []
+    fields = ["id", "title", "artist", "album", "release_year", "path", "user_id"]
+    for song in session.query(Song).filter(Song.user_id == id).all(): 
+        logging.debug('delete song:', song)
+        try:
+            os.remove(os.path.join(os.path.abspath('./uploads'), song.path))
+        except Exception as e:
+            logging.debug("Saving unsuccessful", type(e).__name__)
+
     session.delete(user)
+
     session.commit()
     session.close()
 
