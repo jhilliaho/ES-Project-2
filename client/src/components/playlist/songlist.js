@@ -7,7 +7,10 @@ class SongList extends Component {
     constructor(props) {
         super(props);
         
-        let url = "/api/play/"+this.props.songs[0].id
+        if(this.props.songs.length>0)
+            let url = "/api/play/"+this.props.songs[0].id
+        else
+            let url = ""
         let playerRef = "audioPlayer"+this.props.playlistId
         this.state = {currentSongNumber: 0, currentSongUrl:url, playStatus: "PAUSED", glyph: "play", playerRef: playerRef};
         
