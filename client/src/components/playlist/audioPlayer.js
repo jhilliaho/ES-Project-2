@@ -34,6 +34,7 @@ class AudioPlayer extends Component {
 	    		url={this.state.currentSongUrl}
 	    		playStatus={this.props.playStatus}
 	    		onFinishedPlaying={this.nextSong}
+	    		ref={this.props.playerRef}
     		/>
 	  	)
 	}

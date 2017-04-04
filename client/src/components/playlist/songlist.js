@@ -8,7 +8,8 @@ class SongList extends Component {
         super(props);
         
         let url = "/api/play/"+this.props.songs[0].id
-        this.state = {currentSongNumber: 0, currentSongUrl:url, playStatus: "PAUSED", glyph: "play"};
+        let playerRef = "audioPlayer"+this.props.playlistId
+        this.state = {currentSongNumber: 0, currentSongUrl:url, playStatus: "PAUSED", glyph: "play", playerRef: playerRef};
         
         this.removeSongFromPlaylist = this.removeSongFromPlaylist.bind(this)
         this.togglePlay = this.togglePlay.bind(this)
@@ -45,11 +46,7 @@ class SongList extends Component {
     }
 
     nextSong(){
-        let songNumber = (this.state.currentSongNumber+1)%this.props.songs.length
-        this.setState({currentSongNumber: songNumber})
-
-        let newUrl = "/api/play/"+this.props.songs[songNumber].id
-        this.setState({currentSongUrl: newUrl})
+        this.refs[this.state.playerRef].nextSong()
     }
 
     render() {
@@ -83,7 +80,7 @@ class SongList extends Component {
                         <Glyphicon glyph="forward" />
                     </button>
                 </div>
-                <AudioPlayer songs={this.props.songs} playStatus={this.state.playStatus} currentSongUrl={this.state.currentSongUrl} currentSongNumber={this.state.currentSongNumber}/>
+                <AudioPlayer songs={this.props.songs} playStatus={this.state.playStatus} currentSongUrl={this.state.currentSongUrl} currentSongNumber={this.state.currentSongNumber} ref={this.state.playerRef}/>
                 <br/>
                 {rows}
             </div>
