@@ -2,7 +2,7 @@ Route for testing
 It returns the last user as a string
 ---
 tags:
-  - testRoutes
+  - user
 responses:
   200:
     description: A single user item

@@ -130,6 +130,7 @@ def user_loader(id):
 
 
 @app.route('/login', methods=['POST', 'GET'])
+@swag_from('swag/login.yml')
 def login():
     if flask.request.method == 'GET':
         logging.debug('GET login')
@@ -157,12 +158,18 @@ def login():
 
     return flask.redirect(flask.url_for('login'))
 
-@app.route('/register', methods=['POST', 'GET'])
-def register():
-    if flask.request.method == 'GET':
-        logging.debug('GET register')
-        return render_template('register.html')
 
+@app.route('/register', methods=['GET'])
+@swag_from('swag/registerGet.yml')
+def register():
+    logging.debug('GET register')
+    return render_template('register.html')
+
+
+
+@app.route('/register', methods=['POST'])
+@swag_from('swag/registerPost.yml')
+def registerUser():
     name = request.form['name']
     email = request.form['email']
     password = request.form['password']
@@ -176,6 +183,7 @@ def register():
     return flask.redirect(flask.url_for('login'))
 
 @app.route('/logout', methods=['POST', 'GET'])
+@swag_from('swag/logout.yml')
 def logout():
     logging.debug('Logout')
 
@@ -198,6 +206,7 @@ def unauthorized():
 
 @app.route('/', methods=["GET"])
 @flask_login.login_required
+@swag_from('swag/index.yml')
 def index():
     logging.debug('GET index')
 
@@ -212,13 +221,6 @@ def spec():
 
 
 ### API ###
-
-@app.route('/api/test', methods=["GET"])
-@flask_login.login_required
-@swag_from('swag/test.yml')
-def test():
-    logging.debug('GET api/test')
-    return api.read()
 
 # i dont know if we need these routes...
 #@app.route('/api/users', methods=["GET","POST"])
@@ -236,9 +238,11 @@ def test():
 #        #notification that user was added
 #        return flask.redirect(flask.url_for('login'))
 
-@app.route('/api/user', methods=["GET","POST","DELETE"])
+@app.route('/api/user', endpoint='user', methods=["GET","POST","DELETE"])
 @flask_login.login_required
-#@swag_from('swag/test.yml')
+@swag_from('swag/userGet.yml', endpoint='user', methods=['GET'])
+@swag_from('swag/userPost.yml', endpoint='user', methods=['POST'])
+@swag_from('swag/userDelete.yml', endpoint='user', methods=['DELETE'])
 def user():
     id = flask_login.current_user.id
     if flask.request.method == 'GET':
@@ -265,6 +269,7 @@ def user():
 # GET /api/song, returns all songs, must be logged in
 @app.route('/api/song', methods=["GET"])
 @flask_login.login_required
+@swag_from('swag/songGet.yml')
 def getAllSongs():
     logging.debug('GET api/song')
     return jsonify(api.getSongs())
@@ -273,6 +278,7 @@ def getAllSongs():
 # POST /api/song, adds one song, must be logged in
 @app.route('/api/song', methods=["POST"])
 @flask_login.login_required
+@swag_from('swag/songPost.yml')
 def postSong():
     logging.debug('POST api/song')
     print("ADD SONG")
@@ -308,6 +314,7 @@ def postSong():
 # DELETE /api/song/id, delete one song, must be logged in and the owner of the song
 @app.route('/api/song/<song_id>', methods=["DELETE"])
 @flask_login.login_required
+@swag_from('swag/songWithIdDelete.yml')
 def deleteSong(song_id):
     logging.debug('DELETE api/song')
     api.deleteSong(song_id, flask_login.current_user.id)
@@ -316,6 +323,7 @@ def deleteSong(song_id):
 # PUT /api/song/id, update song data, must be logged in and the owner of the song
 @app.route('/api/song/<song_id>', methods=["PUT"])
 @flask_login.login_required
+@swag_from('swag/songWithIdPut.yml')
 def updateSong(song_id):
     logging.debug('PUT api/song')
     data = request.json
@@ -327,6 +335,7 @@ def updateSong(song_id):
 # GET /api/playlist, returns all playlists of the user, must be logged in
 @app.route('/api/playlist', methods=["GET"])
 @flask_login.login_required
+@swag_from('swag/playlistGet.yml')
 def getAllPlaylists():
     logging.debug('GET api/playlist')
     return jsonify(api.getPlaylists(flask_login.current_user.id))
@@ -334,6 +343,7 @@ def getAllPlaylists():
 # POST /api/playlist, adds one playlist, must be logged in
 @app.route('/api/playlist', methods=["POST"])
 @flask_login.login_required
+@swag_from('swag/playlistPost.yml')
 def postPlaylist():
     logging.debug('POST api/playlist')
     logging.debug(request.json)
@@ -348,6 +358,7 @@ def postPlaylist():
 # DELETE /api/playlist/id, delete one playlist, must be logged in and the owner of the playlist
 @app.route('/api/playlist/<playlist_id>', methods=["DELETE"])
 @flask_login.login_required
+@swag_from('swag/playlistWithIdDelete.yml')
 def deletePlaylist(playlist_id):
     logging.debug('DELETE api/playlist/id')
     api.deletePlaylist(playlist_id, flask_login.current_user.id)
@@ -356,6 +367,7 @@ def deletePlaylist(playlist_id):
 # PUT /api/playlist/id, update playlist data, must be logged in and the owner of the playlist
 @app.route('/api/playlist/<playlist_id>', methods=["PUT"])
 @flask_login.login_required
+@swag_from('swag/playlistWithIdPut.yml')
 def updatePlaylist(playlist_id):
     logging.debug('PUT api/playlist/id')
     data = request.json
@@ -363,9 +375,12 @@ def updatePlaylist(playlist_id):
     api.updatePlaylist(playlist_id, data["name"])
     return "ok"
 
+
+
 # POST /api/playlist/<playlist_id>/songs/<song_id>, add song to playlist, must be logged in and the owner of the playlist
 @app.route('/api/playlist/<playlist_id>/songs/<song_id>', methods=["POST"])
 @flask_login.login_required
+@swag_from('swag/playlistWithSongPost.yml')
 def addSongToPlaylist(playlist_id, song_id):
     logging.debug('POST /api/playlist/<playlist_id>/songs/<song_id>')
     api.addSongToPlaylist(song_id, playlist_id)
@@ -374,6 +389,7 @@ def addSongToPlaylist(playlist_id, song_id):
 # DELETE /api/playlist/<playlist_id>/songs/<song_id>, remove song from playlist, must be logged in and the owner of the playlist
 @app.route('/api/playlist/<playlist_id>/songs/<song_id>', methods=["DELETE"])
 @flask_login.login_required
+@swag_from('swag/playlistWithSongDelete.yml')
 def removeSongFromPlaylist(playlist_id, song_id):
     logging.debug('DELETE /api/playlist/<playlist_id>/songs/<song_id>')
     print("\n\nREMOVE SONG FROM PLAYLIST", playlist_id, song_id, "\n\n")
@@ -381,8 +397,12 @@ def removeSongFromPlaylist(playlist_id, song_id):
     return "ok"
 
 
+
+
 # FOR PLAYING MUSIC
 @app.route('/api/play/<song_id>', methods=["GET"])
+@flask_login.login_required
+@swag_from('swag/play.yml')
 def stream(song_id):
     logging.debug('GET /api/play/<song_id>')
     filename = api.getSongPath(song_id)

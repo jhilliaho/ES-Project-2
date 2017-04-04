@@ -15,7 +15,6 @@ class SongList extends Component {
             playerRef = "audioPlayer"+this.props.playlistId
         }
 
-
         this.state = {
             currentSongNumber: 0,
             currentSongUrl:url,
@@ -23,7 +22,7 @@ class SongList extends Component {
             glyph: "play",
             playerRef: playerRef
         };
-        
+
         this.removeSongFromPlaylist = this.removeSongFromPlaylist.bind(this)
         this.togglePlay = this.togglePlay.bind(this)
         this.nextSong = this.nextSong.bind(this)
