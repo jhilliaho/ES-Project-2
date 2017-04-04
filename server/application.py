@@ -20,22 +20,59 @@ import os
 import api
 from functools import partial
 from subprocess import Popen, PIPE
+import sys
+from werkzeug.exceptions import HTTPException
 
 # RUN SEED ON EVERY LAUNCH
 #import db_seed
 
+### LOGGING STARTS ###
+
 import logging
 logging.basicConfig(filename='flask.log',level=logging.DEBUG)
-logging.debug('This is from flask!!')
+
+root = logging.getLogger()
+root.setLevel(logging.DEBUG)
+
+ch = logging.StreamHandler(sys.stdout)
+ch.setLevel(logging.DEBUG)
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+ch.setFormatter(formatter)
+root.addHandler(ch)
+
+logging.debug('Starting the application')
+
+### LOGGING ENDS ###
+
+### FILE PATHS START ###
+
+PATH, tail = os.path.split(os.path.dirname(os.path.realpath(__file__)))
+
+MUSIC_PATH = os.path.join(PATH, 'server/uploads')
+logging.debug("Music folder: " + MUSIC_PATH)
+
+if not os.path.exists(MUSIC_PATH):
+    logging.debug("Creating the music folder")
+    os.makedirs(MUSIC_PATH)
+    logging.debug("Set folder permissions")
+    os.chmod(MUSIC_PATH, 0o700)
 
 deploy = False
 
 if deploy:
-    template_dir = os.path.abspath('./templates')
-    static_dir = os.path.abspath('./static')
+    logging.debug('MODE: Deploy')
+    template_dir = os.path.join(PATH, 'server/templates')
+    static_dir = os.path.join(PATH, 'server/static')
 else:
-    template_dir = os.path.abspath('../client/build')
-    static_dir = os.path.abspath('../client/build/static')
+    logging.debug('MODE: Develop')
+    template_dir = os.path.join(PATH, 'client/build')
+    static_dir = os.path.join(PATH, 'client/build/static')
+
+logging.debug('Templates: ' + template_dir)
+logging.debug('Static: ' + static_dir)
+
+
+### FILE PATHS ENDS ###
 
 
 app = Flask(__name__,template_folder=template_dir,static_folder=static_dir)
@@ -44,6 +81,15 @@ Swagger(app)
 CORS(app)
 
 application = app
+
+@app.errorhandler(Exception)
+def handle_error(e):
+    code = 500
+    logging.debug(e)
+    if isinstance(e, HTTPException):
+        code = e.code
+        logging.debug(code)
+    return jsonify(error=str(e)), code
 
 ### AUTHENTICATION STARTS ###
 # https://flask-login.readthedocs.io/en/latest/
@@ -245,7 +291,7 @@ def postSong():
         logging.debug(filename)
 
         try:
-            file.save(os.path.join(os.path.abspath('./uploads'), filename))
+            file.save(os.path.join(MUSIC_PATH, filename))
         except Exception as e:
             logging.debug("Saving unsuccessful", type(e).__name__)
 
@@ -270,7 +316,7 @@ def deleteSong(song_id):
 @flask_login.login_required
 def updateSong(song_id):
     logging.debug('PUT api/song')
-    data = json.loads(request.data)
+    data = request.json
     api.updateSong(song_id, data["title"],data["artist"],data["album"],data["release_year"],)
     return "ok"
 
@@ -288,8 +334,13 @@ def getAllPlaylists():
 @flask_login.login_required
 def postPlaylist():
     logging.debug('POST api/playlist')
-    data = json.loads(request.data)
+    logging.debug(request.json)
+
+    data = request.json
+    logging.debug(data)
+
     api.addPlaylist(flask_login.current_user.id, data["name"])
+
     return "ok"
 
 # DELETE /api/playlist/id, delete one playlist, must be logged in and the owner of the playlist
@@ -305,7 +356,8 @@ def deletePlaylist(playlist_id):
 @flask_login.login_required
 def updatePlaylist(playlist_id):
     logging.debug('PUT api/playlist/id')
-    data = json.loads(request.data)
+    data = request.json
+    logging.debug(data)
     api.updatePlaylist(playlist_id, data["name"])
     return "ok"
 
@@ -331,13 +383,10 @@ def removeSongFromPlaylist(playlist_id, song_id):
 @app.route('/api/play/<song_id>', methods=["GET"])
 def stream(song_id):
     logging.debug('GET /api/play/<song_id>')
-    dir = os.path.abspath('./uploads')
     filename = api.getSongPath(song_id)
-    process = Popen(['cat', os.path.join(dir,filename)], stdout=PIPE, bufsize=-1)
+    process = Popen(['cat', os.path.join(MUSIC_PATH,filename)], stdout=PIPE, bufsize=-1)
     read_chunk = partial(os.read, process.stdout.fileno(), 1024)
     return Response(iter(read_chunk, b''), mimetype='audio/mp3')
-
-
 
 ### ROUTING ENDS ###
 
@@ -347,10 +396,5 @@ if __name__ == '__main__':
         application.run()
     else:
         application.debug = True
-        application.run(host="localhost", port=3001)
-
-
-# database connection and schema
-# REST API
-# Authentication
+        application.run(host="localhost", port=5000)
 
