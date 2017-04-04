@@ -30,7 +30,7 @@ import logging
 logging.basicConfig(filename='flask.log',level=logging.DEBUG)
 logging.debug('This is from flask!!')
 
-deploy = True
+deploy = False
 
 if deploy:
     template_dir = os.path.abspath('./templates')

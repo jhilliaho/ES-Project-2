@@ -58,8 +58,8 @@ class User(Base):
     creation_date = Column(DateTime, default=datetime.datetime.utcnow)
 
     # Relationships to songs and playlists
-    songs = relationship("Song", back_populates="user")
-    playlists = relationship("Playlist", back_populates="user")
+    songs = relationship("Song", back_populates="user", cascade="save-update, merge, delete")
+    playlists = relationship("Playlist", back_populates="user", cascade="save-update, merge, delete")
 
     def __repr__(self): return "<User(name='%s', email='%s', password='%s')>" % (self.name, self.email, self.password)
 
