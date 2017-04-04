@@ -22,7 +22,7 @@ from functools import partial
 from subprocess import Popen, PIPE
 
 # RUN SEED ON EVERY LAUNCH
-import db_seed
+#import db_seed
 
 import logging
 logging.basicConfig(filename='flask.log',level=logging.DEBUG)

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { FormGroup, ControlLabel, Glyphicon, FormControl, Panel } from 'react-bootstrap';
+import { FormGroup, ControlLabel, Glyphicon, FormControl, Panel} from 'react-bootstrap';
 import './playlistrow.css';
 import SongList from './songlist'
 
