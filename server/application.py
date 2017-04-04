@@ -20,6 +20,8 @@ import os
 import api
 from functools import partial
 from subprocess import Popen, PIPE
+import sys
+from werkzeug.exceptions import HTTPException
 
 # RUN SEED ON EVERY LAUNCH
 import db_seed
@@ -44,6 +46,15 @@ Swagger(app)
 CORS(app)
 
 application = app
+
+@app.errorhandler(Exception)
+def handle_error(e):
+    code = 500
+    logging.debug(e)
+    if isinstance(e, HTTPException):
+        code = e.code
+        logging.debug(code)
+    return jsonify(error=str(e)), code
 
 ### AUTHENTICATION STARTS ###
 # https://flask-login.readthedocs.io/en/latest/
@@ -270,7 +281,7 @@ def deleteSong(song_id):
 @flask_login.login_required
 def updateSong(song_id):
     logging.debug('PUT api/song')
-    data = json.loads(request.data)
+    data = request.json
     api.updateSong(song_id, data["title"],data["artist"],data["album"],data["release_year"],)
     return "ok"
 
@@ -288,8 +299,13 @@ def getAllPlaylists():
 @flask_login.login_required
 def postPlaylist():
     logging.debug('POST api/playlist')
-    data = json.loads(request.data)
+    logging.debug(request.json)
+
+    data = request.json
+    logging.debug(data)
+
     api.addPlaylist(flask_login.current_user.id, data["name"])
+
     return "ok"
 
 # DELETE /api/playlist/id, delete one playlist, must be logged in and the owner of the playlist
@@ -305,7 +321,8 @@ def deletePlaylist(playlist_id):
 @flask_login.login_required
 def updatePlaylist(playlist_id):
     logging.debug('PUT api/playlist/id')
-    data = json.loads(request.data)
+    data = request.json
+    logging.debug(data)
     api.updatePlaylist(playlist_id, data["name"])
     return "ok"
 
