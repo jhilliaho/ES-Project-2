@@ -399,6 +399,7 @@ def removeSongFromPlaylist(playlist_id, song_id):
 
 # FOR PLAYING MUSIC
 @app.route('/api/play/<song_id>', methods=["GET"])
+@flask_login.login_required
 @swag_from('swag/play.yml')
 def stream(song_id):
     logging.debug('GET /api/play/<song_id>')
