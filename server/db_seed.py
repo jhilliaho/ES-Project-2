@@ -22,12 +22,12 @@ users = [
 session.add_all(users)
 
 songs = [
-    Song(title="Song a1", artist="Artist 1", album="Album a", release_year=2001, path="File 1", user=users[0]),
-    Song(title="Song a2", artist="Artist 2", album="Album a", release_year=2002, path="File 2", user=users[0]),
-    Song(title="Song a3", artist="Artist 3", album="Album a", release_year=2003, path="File 3", user=users[0]),
-    Song(title="Song b1", artist="Artist 1", album="Album b", release_year=2004, path="File 4", user=users[1]),
-    Song(title="Song b2", artist="Artist 2", album="Album b", release_year=2005, path="File 5", user=users[1]),
-    Song(title="Song b3", artist="Artist 3", album="Album b", release_year=2006, path="File 6", user=users[1])
+    Song(title="Song a1", artist="Artist 1", album="Album a", release_year=2001, path="example.mp3", user=users[0]),
+    Song(title="Song a2", artist="Artist 2", album="Album a", release_year=2002, path="example.mp3", user=users[0]),
+    Song(title="Song a3", artist="Artist 3", album="Album a", release_year=2003, path="example.mp3", user=users[0]),
+    Song(title="Song b1", artist="Artist 1", album="Album b", release_year=2004, path="example.mp3", user=users[1]),
+    Song(title="Song b2", artist="Artist 2", album="Album b", release_year=2005, path="example.mp3", user=users[1]),
+    Song(title="Song b3", artist="Artist 3", album="Album b", release_year=2006, path="example.mp3", user=users[1])
 ]
 
 playlists = [
