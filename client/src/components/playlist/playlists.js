@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import {Table, Accordion, Panel, Form, ControlLabel, FormControl, FormGroup} from 'react-bootstrap';
+import {Accordion, Panel} from 'react-bootstrap';
 import './playlists.css';
 import AddPlaylist from './addplaylist'
 import PlaylistRow from './playlistrow'
+import configuration from '../../conf.js'
 
 class Playlists extends Component {
     constructor() {
@@ -15,7 +16,7 @@ class Playlists extends Component {
     }
 
     fetchPlaylists() {
-        let result = fetch('/api/playlist', {mode: "cors", credentials: "include"})
+        let result = fetch(configuration.api_host + '/api/playlist', {mode: "cors", credentials: "include"})
         result.then((response) => {return response.text()})
             .then((res) => {
                 let playlists = JSON.parse(res);
@@ -26,7 +27,7 @@ class Playlists extends Component {
     }
 
     fetchUser() {
-        let result = fetch('/api/user', {mode: "cors", credentials: "include"})
+        let result = fetch(configuration.api_host + '/api/user', {mode: "cors", credentials: "include"})
         result.then((response) => {return response.text()})
             .then((res) => {
                 let user = JSON.parse(res);

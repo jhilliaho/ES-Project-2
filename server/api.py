@@ -48,7 +48,7 @@ def deleteUser(id):
     session.close()
 
 def getUserById(id):
-    logging.debug('api.getUserById', id)
+    logging.debug('api.getUserById' + str(id))
     session = Session()
     user = session.query(User).filter(User.id==id).first()
 

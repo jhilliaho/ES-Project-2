@@ -4,6 +4,7 @@ import { Link } from 'react-router';
 import { LinkContainer } from 'react-router-bootstrap';
 import {Grid, Row, Col} from 'react-bootstrap';
 import './layout.css';
+import configuration from '../conf.js'
 
 // Use react-router-bootstrap wrapper in navbar:
 // http://stackoverflow.com/questions/35687353/react-bootstrap-link-item-in-a-navitem
@@ -17,7 +18,11 @@ class Layout extends Component {
 
     fetchUser() {
 
-        let result = fetch('/api/user', {mode: "cors", credentials: "include"})
+        let result = fetch(configuration.api_host + '/api/user',
+            {
+                mode: "cors",
+                credentials: "include"
+            })
         result.then((response) => {return response.text()})
             .then((res) => {
                 let user = JSON.parse(res);
@@ -33,7 +38,7 @@ class Layout extends Component {
             <Navbar>
                 <Navbar.Header>
                     <Navbar.Text>
-                        <Link to="/">App name</Link>
+                        <Link to="/">{configuration.app_name}</Link>
                     </Navbar.Text>
                 </Navbar.Header>
 

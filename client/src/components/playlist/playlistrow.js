@@ -1,19 +1,8 @@
 import React, { Component } from 'react';
-import { FormGroup, ControlLabel, Glyphicon, FormControl, Panel} from 'react-bootstrap';
+import { Glyphicon, FormControl, Panel} from 'react-bootstrap';
 import './playlistrow.css';
 import SongList from './songlist'
-
-function FieldGroup({ id, label, help, ...props }) {
-    return (
-        <FormGroup controlId={id}>
-            <ControlLabel>{label}</ControlLabel>
-            <FormControl {...props} />
-        </FormGroup>
-    );
-}
-
-// Properties: playlist data, callback to update playlist list
-// Inside this: delete playlist, edit playlist, add playlist to playlist
+import configuration from '../../conf.js'
 
 class PlayListRow extends Component {
     constructor(props) {
@@ -21,10 +10,11 @@ class PlayListRow extends Component {
         this.state = this.props.playlist;
         this.state.edited = false;
 
-        if(this.props.activePlaylist == this.props.playlist.id)
-            this.state.showSongs= true
-        else
-            this.setState.showSongs= false
+        if(this.props.activePlaylist === this.props.playlist.id)
+            this.state.showSongs = true;
+        else {
+            this.state.showSongs = false;
+        }
 
         this.handleChange = this.handleChange.bind(this);
         this.deletePlaylist = this.deletePlaylist.bind(this);
@@ -46,7 +36,7 @@ class PlayListRow extends Component {
         console.log("Deleting", id);
         e.preventDefault();
 
-        let result = fetch('/api/playlist/' + id,
+        let result = fetch(configuration.api_host + '/api/playlist/' + id,
             {
                 method: "DELETE",
                 mode: "cors",
@@ -72,7 +62,7 @@ class PlayListRow extends Component {
 
         console.log(this.state)
 
-        let result = fetch('/api/playlist/' + id,
+        let result = fetch(configuration.api_host + '/api/playlist/' + id,
             {
                 method: "PUT",
                 mode: "cors",
@@ -83,7 +73,7 @@ class PlayListRow extends Component {
         result.then((res) => {
             console.log(res);
             this.props.updatePlaylists();
-            this.state.edited = false;
+            this.setState({"edited": false});
         })
             .catch(function(ex) {console.log('FAIL: ', ex)})
     }

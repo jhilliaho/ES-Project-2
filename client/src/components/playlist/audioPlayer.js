@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Glyphicon} from 'react-bootstrap';
+import configuration from '../../conf.js'
 
 var Sound = require('react-sound');
 
@@ -22,7 +22,7 @@ class AudioPlayer extends Component {
 		console.log(songNumber)
 	
 		console.log(this.props.songs)
-        let newUrl = "/api/play/"+this.props.songs[songNumber].id
+        let newUrl = configuration.api_host + "/api/play/"+this.props.songs[songNumber].id
         console.log(newUrl)
 
         this.setState({currentSongUrl: newUrl})

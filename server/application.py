@@ -49,7 +49,6 @@ logging.debug('Starting the application')
 PATH, tail = os.path.split(os.path.dirname(os.path.realpath(__file__)))
 
 MUSIC_PATH = os.path.join(PATH, 'server/uploads')
-logging.debug("Music folder: " + MUSIC_PATH)
 
 if not os.path.exists(MUSIC_PATH):
     logging.debug("Creating the music folder")
@@ -68,6 +67,7 @@ else:
     template_dir = os.path.join(PATH, 'client/build')
     static_dir = os.path.join(PATH, 'client/build/static')
 
+logging.debug("Music folder: " + MUSIC_PATH)
 logging.debug('Templates: ' + template_dir)
 logging.debug('Static: ' + static_dir)
 
@@ -78,7 +78,9 @@ logging.debug('Static: ' + static_dir)
 app = Flask(__name__,template_folder=template_dir,static_folder=static_dir)
 Swagger(app)
 
-CORS(app)
+# This should be needed only for developing locally
+if not deploy:
+    CORS(app, supports_credentials=True)
 
 application = app
 
@@ -112,7 +114,7 @@ class User(flask_login.UserMixin):
 # This function returns a User object based on the user id
 @login_manager.user_loader
 def user_loader(id):
-    logging.debug('User loader: loading user', id)
+    logging.debug('User loader: loading user' + str(id))
 
     u = [user for user in api.getUsers() if str(user.id) == str(id)]
 

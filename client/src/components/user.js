@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './user.css';
+import configuration from '../conf.js'
 
 class User extends Component {
     constructor() {
@@ -11,7 +12,11 @@ class User extends Component {
 
     fetchUser() {
 
-        let result = fetch('/api/user', {mode: "cors", credentials: "include"})
+        let result = fetch(configuration.api_host + '/api/user',
+            {
+                mode: "cors",
+                credentials: "include"
+            })
         result.then((response) => {return response.text()})
             .then((res) => {
                 let user = JSON.parse(res)
@@ -22,7 +27,12 @@ class User extends Component {
     }
 
     deleteUser(){
-        fetch('/api/user', {mode: "cors", credentials: "include",method:"DELETE"}).then(
+        fetch(configuration.api_host + '/api/user',
+            {
+                mode: "cors",
+                credentials: "include",
+                method:"DELETE"
+            }).then(
                 window.location.reload()
             )
 
@@ -37,7 +47,7 @@ class User extends Component {
 			                <h3>Welcome to your profile!</h3>
                 			<form method="POST" encType="multipart/form-data" action="/api/user">
 				                <div className="form-group">
-			                        <label htmlFor="userName" autofocus>Name</label>
+			                        <label htmlFor="userName" autoFocus>Name</label>
 			                        <input type="text" name="name" className="form-control" id="userName" placeholder={this.state.username}/>
 			                    </div>
 			                    <div className="form-group">

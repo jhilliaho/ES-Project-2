@@ -3,6 +3,7 @@ import {Table, Accordion, Panel, Form, ControlLabel, FormControl, FormGroup} fro
 import './songlist.css';
 import AddSong from './addsong'
 import SongRow from './songrow'
+import configuration from '../../conf.js'
 
 class SongList extends Component {
     constructor() {
@@ -16,7 +17,7 @@ class SongList extends Component {
 
     fetchSongs() {
 
-        let result = fetch('/api/song', {mode: "cors", credentials: "include"})
+        let result = fetch(configuration.api_host + '/api/song', {mode: "cors", credentials: "include"})
         result.then((response) => {return response.text()})
             .then((res) => {
                 let songs = JSON.parse(res);
@@ -27,7 +28,7 @@ class SongList extends Component {
 
     fetchUser() {
 
-        let result = fetch('/api/user', {mode: "cors", credentials: "include"})
+        let result = fetch(configuration.api_host + '/api/user', {mode: "cors", credentials: "include"})
         result.then((response) => {return response.text()})
             .then((res) => {
                 let user = JSON.parse(res);
