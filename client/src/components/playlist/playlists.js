@@ -7,8 +7,9 @@ import PlaylistRow from './playlistrow'
 class Playlists extends Component {
     constructor() {
         super();
-        this.state = {'playlists': [], 'user_id': ""};
+        this.state = {'playlists': [],'activePlaylist': "", 'user_id': ""};
         this.fetchPlaylists = this.fetchPlaylists.bind(this);
+        this.changePlaylist = this.changePlaylist.bind(this);
         this.fetchUser();
         this.fetchPlaylists();
     }
@@ -18,7 +19,7 @@ class Playlists extends Component {
         result.then((response) => {return response.text()})
             .then((res) => {
                 let playlists = JSON.parse(res);
-                this.setState({playlists: playlists});
+                this.setState({playlists: playlists, activePlaylist: playlists[0].id});
                 console.log(playlists)
             })
             .catch(function(ex) {console.log('FAIL: ', ex)})
@@ -34,11 +35,16 @@ class Playlists extends Component {
             .catch(function(ex) {console.log('FAIL: ', ex)})
     }
 
+    changePlaylist(playlist){
+        this.refs[this.state.activePlaylist].hidePlaylist()
+        this.setState({activePlaylist: playlist})
+    }
+
     render() {
 
         let rows = [];
         this.state["playlists"].forEach((el) => {
-            rows.push(<PlaylistRow key={el.id} playlist={el} updatePlaylists={this.fetchPlaylists}/>)
+            rows.push(<PlaylistRow ref={el.id} key={el.id} playlist={el} updatePlaylists={this.fetchPlaylists} activePlaylist={this.state.activePlaylist} changePlaylist={this.changePlaylist}/>)
         });
 
         return (
@@ -53,7 +59,11 @@ class Playlists extends Component {
                 <Panel header="Sort by" eventKey="1">
                     Form
                 </Panel>
-                {rows}
+
+                <Accordion>
+                    {rows}
+                </Accordion>
+                
 
             </div>
         );

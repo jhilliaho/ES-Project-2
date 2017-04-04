@@ -20,27 +20,21 @@ class PlayListRow extends Component {
         super(props);
         this.state = this.props.playlist;
         this.state.edited = false;
-        this.state.showSongs = false;
+
+        if(this.props.activePlaylist == this.props.playlist.id)
+            this.state.showSongs= true
+        else
+            this.setState.showSongs= false
 
         this.handleChange = this.handleChange.bind(this);
         this.deletePlaylist = this.deletePlaylist.bind(this);
         this.savePlaylist = this.savePlaylist.bind(this);
         this.discardPlaylist = this.discardPlaylist.bind(this);
         this.editPlaylist = this.editPlaylist.bind(this);
-        this.playPlaylist = this.playPlaylist.bind(this);
-        this.showSongList = this.showSongList.bind(this);
+        this.changePlaylist = this.changePlaylist.bind(this);
+        this.hidePlaylist = this.hidePlaylist.bind(this);
     }
 
-    showSongList(e) {
-        e.preventDefault();
-        let show = (e.currentTarget.name == "show");
-        this.setState({'showSongs': show})
-    }
-
-    playPlaylist(e){
-        let id = e.currentTarget.name;
-        window.open('api/play/'+id, '_blank')
-    }
 
     handleChange(e) {
         this.setState({[e.target.name]:e.target.value});
@@ -101,14 +95,18 @@ class PlayListRow extends Component {
         this.setState({"edited":false, "showSongs": showSongs});
     }
 
+    changePlaylist() {
+        this.props.changePlaylist(this.props.playlist.id)
+        this.setState({showSongs: true})
+    }
+
+    hidePlaylist(){
+        this.setState({showSongs: false})
+    }
+
 
 
     render() {
-        let chevron = <a href="#" name="show" onClick={this.showSongList}><Glyphicon glyph="chevron-up"/></a>;
-        if (this.state.showSongs) {
-            chevron = <a href="#" name="hide" onClick={this.showSongList}><Glyphicon glyph="chevron-down"/></a>;
-        }
-
         let buttons =
             <span className="modify pull-right">
                 <a href="#" name={this.props.playlist.id} onClick={this.editPlaylist}>
@@ -131,8 +129,7 @@ class PlayListRow extends Component {
             </span>;
 
         let row =
-                <div>
-                    {chevron}
+                <div onClick={this.changePlaylist}>
                     <h4 className="playlistTitle">
                         {this.props.playlist.name} &nbsp;-&nbsp;
                         {this.props.playlist.creation_date} &nbsp;-&nbsp;
@@ -143,8 +140,7 @@ class PlayListRow extends Component {
 
         if (this.state.edited) {
             row =
-                <div>
-                    {chevron}
+                <div onClick={this.changePlaylist}>
                     <FormControl  className="playlistProperty" name="name" type="text" placeholder="Enter a name"  value={this.state.name} onChange={this.handleChange}/>
                     {submit}
                 </div>
@@ -156,8 +152,7 @@ class PlayListRow extends Component {
         }
 
         return (
-            <Panel>
-                {row}
+            <Panel header={row} eventKey={this.props.playlistId}>
                 {songList}
             </Panel>
         );
