@@ -8,6 +8,7 @@ class PlayListRow extends Component {
     constructor(props) {
         super(props);
         this.state = this.props.playlist;
+        if (this.state == undefined) this.state = {};
         this.state.edited = false;
 
         if(this.props.activePlaylist === this.props.playlist.id)

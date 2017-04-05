@@ -45,7 +45,7 @@ class User extends Component {
 			        <div className="row">
 			            <div className="col-xs-12 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 col-lg-4 col-lg-offset-4 well">
 			                <h3>Welcome to your profile!</h3>
-                			<form method="POST" encType="multipart/form-data" action="/api/user">
+                			<form method="POST" encType="multipart/form-data" action={configuration.api_host + '/api/user'}>
 				                <div className="form-group">
 			                        <label htmlFor="userName" autoFocus>Name</label>
 			                        <input type="text" name="name" className="form-control" id="userName" placeholder={this.state.username}/>

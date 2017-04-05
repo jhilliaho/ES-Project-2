@@ -397,8 +397,6 @@ def removeSongFromPlaylist(playlist_id, song_id):
     return "ok"
 
 
-
-
 # FOR PLAYING MUSIC
 @app.route('/api/play/<song_id>', methods=["GET"])
 @flask_login.login_required

@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Playlists from './playlists';
+import SongList from './songlist';
 
 it('renders without crashing', () => {
   const div = document.createElement('div');
-  ReactDOM.render(<SongListRow />, div);
+  ReactDOM.render(<SongList />, div);
 });

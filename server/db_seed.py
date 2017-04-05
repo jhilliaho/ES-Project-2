@@ -15,19 +15,19 @@ session.query(User).delete()
 
 # Add new data
 users = [
-    User(email="aa@aa.aa", name="User aa", password="$pbkdf2-sha256$29000$spby3psTQmiNsXbOmZNSKg$3dFUYhI.QU8s0AMAvb6kgfWUvXjcH0JPg/advRlDXUU"),
-    User(email="bb@bb.bb", name="User bb", password="$pbkdf2-sha256$29000$IASg9D7nHANASEmplXIOwQ$DQZTEx7YtcREKJSn998B75zyVEcmYH/rt6JLoehnh58")
+    User(email="aa@aa.aa", name="aaaa", password="$pbkdf2-sha256$29000$spby3psTQmiNsXbOmZNSKg$3dFUYhI.QU8s0AMAvb6kgfWUvXjcH0JPg/advRlDXUU"),
+    User(email="bb@bb.bb", name="bbbb", password="$pbkdf2-sha256$29000$IASg9D7nHANASEmplXIOwQ$DQZTEx7YtcREKJSn998B75zyVEcmYH/rt6JLoehnh58")
 ]
 
 session.add_all(users)
 
 songs = [
-    Song(title="Song a1", artist="Artist 1", album="Album a", release_year=2001, path="example.mp3", user=users[0]),
-    Song(title="Song a2", artist="Artist 2", album="Album a", release_year=2002, path="example.mp3", user=users[0]),
-    Song(title="Song a3", artist="Artist 3", album="Album a", release_year=2003, path="example.mp3", user=users[0]),
-    Song(title="Song b1", artist="Artist 1", album="Album b", release_year=2004, path="example.mp3", user=users[1]),
-    Song(title="Song b2", artist="Artist 2", album="Album b", release_year=2005, path="example.mp3", user=users[1]),
-    Song(title="Song b3", artist="Artist 3", album="Album b", release_year=2006, path="example.mp3", user=users[1])
+    Song(title="Song a1", artist="Artist 1", album="Album c", release_year=2001, path="example.mp3", user=users[0]),
+    Song(title="Song a2", artist="Artist 2", album="Album c", release_year=2002, path="example.mp3", user=users[0]),
+    Song(title="Song a3", artist="Artist 3", album="Album c", release_year=2003, path="example.mp3", user=users[0]),
+    Song(title="Song b1", artist="Artist 1", album="Album d", release_year=2004, path="example.mp3", user=users[1]),
+    Song(title="Song b2", artist="Artist 2", album="Album d", release_year=2005, path="example.mp3", user=users[1]),
+    Song(title="Song b3", artist="Artist 3", album="Album d", release_year=2006, path="example.mp3", user=users[1])
 ]
 
 playlists = [

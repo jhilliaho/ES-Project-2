@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { FormGroup, ControlLabel, Button, FormControl } from 'react-bootstrap';
 import './addsong.css';
+import configuration from '../../conf.js'
 
 function FieldGroup({ id, label, help, ...props }) {
     return (
@@ -26,7 +27,7 @@ class AddSong extends Component {
     render() {
         return (
             <div className="addSong">
-                <form method="POST" encType="multipart/form-data" action="/api/song">
+                <form method="POST" encType="multipart/form-data" action={configuration.api_host + '/api/song'}>
                     <FieldGroup
                         id="addSongTitle"
                         type="text"
