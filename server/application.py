@@ -278,10 +278,13 @@ def postSong():
         allowed_extensions = ["mp3", "mp4", "ogg", "wav"]
         if file_extension not in allowed_extensions:
             logging.debug("File type not allower")
-            return abort(400)
+            return abort(400, "Bad file type")
 
         filename = api.addSong(request.form["title"],request.form["artist"],request.form["album"],request.form["year"], flask_login.current_user.id, file_extension)
         logging.debug(filename)
+
+        if filename == "LIMIT_REACHED":
+            return abort(400, "File limit exceeded")
 
         try:
             file.save(os.path.join(MUSIC_PATH, filename))

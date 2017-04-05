@@ -15,3 +15,4 @@ else:
 
 
 secret_key = "very secret phrase9340u4390jg"
+user_max_file_count = 10

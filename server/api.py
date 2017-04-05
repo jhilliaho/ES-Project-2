@@ -3,6 +3,7 @@ from flask import jsonify
 from passlib.hash import pbkdf2_sha256
 import json
 import os
+import configuration
 
 import logging
 logging.basicConfig(filename='flask.log',level=logging.DEBUG)
@@ -114,6 +115,13 @@ def deleteSong(song_id, user_id, mode):
 def addSong(title, artist, album, year, user_id, file_extension):
     logging.debug('api.addSong' + " " + title + " " + artist + " " + album + " " + str(year) + " " + str(user_id) + " " + file_extension)
     session = Session()
+
+    # Check user song amount:
+    user_song_amount = len(session.query(Song).filter(Song.user_id == user_id).all())
+    if user_song_amount > configuration.user_max_file_count:
+        logging.debug("Song limit reached. " + str(user_song_amount) + " >= " + str(configuration.user_max_file_count))
+        return "LIMIT_REACHED"
+
     song = Song(title=title, artist=artist, album=album, release_year=year, user_id=user_id)
     session.add(song)
     session.commit()
