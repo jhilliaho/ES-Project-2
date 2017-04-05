@@ -1,3 +1,13 @@
 .home {
+    font-size: 140%;
+}
 
+.home a {
+    color: black;
+    transition: letter-spacing 0.5s;
+    letter-spacing: 1px;
+}
+
+.home a:hover {
+    letter-spacing: 2px;
 }

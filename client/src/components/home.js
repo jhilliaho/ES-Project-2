@@ -31,10 +31,10 @@ class Home extends Component {
                 <h2>Welcome, {this.state.username}!</h2>
                 <h3>In this application you can:</h3>
                 <ul>
-                    <li>Manage and play songs <a href="#/songs">here</a></li>
-                    <li>Manage and listen playlists <a href="#/playlists">here</a></li>
-                    <li>Edit your user profile <a href="#/user">here</a></li>
-                    <li>Log out <a href="logout">here</a></li>
+                    <li><a href="#/songs">Manage and play songs </a></li>
+                    <li><a href="#/playlists">Manage and listen playlists </a></li>
+                    <li><a href="#/user">Edit your user profile </a></li>
+                    <li><a href="logout">Log out </a></li>
                 </ul>
             </div>
         );

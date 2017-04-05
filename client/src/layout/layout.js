@@ -55,7 +55,7 @@ class Layout extends Component {
                         <LinkContainer to="/playlists">
                             <NavItem>Playlists</NavItem>
                         </LinkContainer>
-                        
+
                         <NavDropdown title={this.state.username} id="basic-nav-dropdown">
                             <LinkContainer to="/user">
                                 <MenuItem>Profile</MenuItem>
@@ -70,9 +70,6 @@ class Layout extends Component {
 
             </Navbar>
 
-
-
-
             <Grid>
                 <Row className="show-grid">
                     <Col sm={12}>
@@ -80,7 +77,6 @@ class Layout extends Component {
                     </Col>
                 </Row>
             </Grid>
-
 
         </span>
     );
