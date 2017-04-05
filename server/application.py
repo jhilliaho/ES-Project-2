@@ -114,7 +114,7 @@ class User(flask_login.UserMixin):
 # This function returns a User object based on the user id
 @login_manager.user_loader
 def user_loader(id):
-    logging.debug('User loader: loading user' + str(id))
+    logging.debug('User loader: loading user ' + str(id))
 
     u = [user for user in api.getUsers() if str(user.id) == str(id)]
 
@@ -139,7 +139,7 @@ def login():
     email = request.form['email']
     password = request.form['password']
 
-    logging.debug('POST login with ', email, password)
+    logging.debug('POST login with ' + str(email) + " : " +  str(password))
 
     print("Trying to log in user", email, password)
 
@@ -174,7 +174,7 @@ def registerUser():
     email = request.form['email']
     password = request.form['password']
 
-    logging.debug('POST register with ', name, email, password)
+    logging.debug('POST register with ', str(name), str(email), str(password))
 
     password = pbkdf2_sha256.hash(password)
 
