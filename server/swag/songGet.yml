@@ -1,13 +1,61 @@
-Route for testing
-It returns the last user as a string
+Get all songs
+Returns all songs uploaded by all users.
 ---
 tags:
   - songs
 responses:
   200:
-    description: A single user item
+    description: Songs inside the application
     schema:
-      id: rec_username
-      type: string
-      description: The name of the user
-      default: 'steve-harris'
+      type: array
+      title: songs
+      items:
+        type: object
+        required: [album, artist,id,name,path,release_year,title,user_id]
+        title: song
+        properties:
+          album:
+            type: string
+            description: The album of the song, entered by user
+          artist:
+            type: string
+            description: The artist of the song, entered by user
+          id:
+            type: integer
+            description: The id of the song
+          name:
+            type: string
+            description: The name of the user
+          path:
+            type: string
+            description: The path to the song on the server
+          release_year:
+            type: integer
+            description: The song in which the song was released, entered by user
+          title:
+            type: string
+            description: The title of the song, entered by user
+          user_id:
+            type: integer
+            description: The id of the user who uploaded the song
+    examples:
+      [
+        {
+          "album": "Album a", 
+          "artist": "Artist 2", 
+          "id": 635, 
+          "path": "File 2", 
+          "release_year": 2002, 
+          "title": "Song a2", 
+          "user_id": 217
+        }, 
+        {
+          "album": "Album a", 
+          "artist": "Artist 3", 
+          "id": 636, 
+          "path": "File 3", 
+          "release_year": 2003, 
+          "title": "Song a3", 
+          "user_id": 217
+        }
+      ]

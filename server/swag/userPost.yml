@@ -1,13 +1,27 @@
-Route for testing
-It returns the last user as a string
+Update an existing user
 ---
 tags:
   - user
+consumes:
+  - multipart/form-data
+produces:
+  - text/html, application/xml
+parameters:
+  - 
+    name: name
+    in: formData
+    description: The new name of the user
+    required: false
+    type: string
+  -
+    name: email
+    in: formData
+    description: The new email of the user
+    required: false
+    type: string
+
 responses:
   200:
-    description: A single user item
-    schema:
-      id: rec_username
-      type: string
-      description: The name of the user
-      default: 'steve-harris'
+    description: Updated user
+  400:
+    description: Bad Request
