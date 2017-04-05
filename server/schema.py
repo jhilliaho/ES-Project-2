@@ -3,7 +3,7 @@ from flask import jsonify
 import sqlalchemy
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Integer, String, Sequence, ForeignKey, Table, DateTime
+from sqlalchemy import Column, Integer, String, Boolean, Sequence, ForeignKey, Table, DateTime
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm import relationship
 import configuration
@@ -87,6 +87,7 @@ class Song(Base):
     release_year = Column(Integer())
     path = Column(String(200))
     creation_date = Column(DateTime, default=datetime.datetime.utcnow)
+    deleted = Column(Boolean, default=False)
 
     # Relationship with user
     user_id = Column(Integer, ForeignKey('users.id'))
