@@ -1,7 +1,7 @@
-Returns the index page
+Get the login page
 ---
 tags:
-  - index
+  - authentication
 responses:
   200:
     description: ok

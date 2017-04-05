@@ -17,22 +17,19 @@ parameters:
     schema:
       type: object
       title: song
+      required: [title,artist,album,release_year]
       properties:
         title:
           description: The new title of the song
-          required: true
           type: string
         artist:
           description: The new artist of the song
-          required: true
           type: string
         album:
           description: The new album of the song
-          required: true
           type: string
         release_year:
           description: The new release_year of the song
-          required: true
           type: integer
 
 responses:

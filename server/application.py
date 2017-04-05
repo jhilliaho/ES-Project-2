@@ -128,14 +128,15 @@ def user_loader(id):
 
     return
 
-
-@app.route('/login', methods=['POST', 'GET'])
-@swag_from('swag/login.yml')
+@app.route('/login', methods=['GET'])
+@swag_from('swag/loginGet.yml')
 def login():
-    if flask.request.method == 'GET':
-        logging.debug('GET login')
-        return render_template('login.html')
+    logging.debug('GET login')
+    return render_template('login.html')
 
+@app.route('/login', methods=['POST'])
+@swag_from('swag/loginPost.yml')
+def loginUser():
     email = request.form['email']
     password = request.form['password']
 

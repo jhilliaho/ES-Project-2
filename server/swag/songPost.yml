@@ -1,13 +1,44 @@
-Route for testing
-It returns the last user as a string
+Create and Upload a song
 ---
 tags:
   - songs
+
+consumes:
+  - multipart/form-data, 
+produces:
+  - text/html, application/xml
+parameters:
+  - 
+    name: title
+    in: formData
+    description: The title of the song
+    required: true
+    type: string
+  -
+    name: artist
+    in: formData
+    description: The artist of the song
+    required: true
+    type: string
+  -
+    name: album
+    in: formData
+    description: The album of the song
+    required: true
+    type: string
+  -
+    name: year
+    in: formData
+    description: The year of the song
+    required: true
+    type: integer
+  -
+    name: file
+    in: formData
+    description: The song file
+    required: true
+    type: file
+
 responses:
   200:
-    description: A single user item
-    schema:
-      id: rec_username
-      type: string
-      description: The name of the user
-      default: 'steve-harris'
+    description: ok
