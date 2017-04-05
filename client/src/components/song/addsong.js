@@ -13,10 +13,11 @@ function FieldGroup({ id, label, help, ...props }) {
 }
 
 class AddSong extends Component {
-    constructor() {
-        super();
-        this.state = {};
+    constructor(props) {
+        super(props);
+        this.state = {"title": "exTitle", "artist": "exArtist", "album": "exAlbum", "year": 1231};
         this.handleChange = this.handleChange.bind(this);
+        this.uploadSong = this.uploadSong.bind(this);
     }
 
     handleChange(e) {
@@ -24,10 +25,33 @@ class AddSong extends Component {
         console.log("changed",e.target.name,"to",e.target.value);
     }
 
+    uploadSong(e) {
+        e.preventDefault();
+
+        let file = this.refs.file.files[0];
+        console.log("Uploading file", file)
+        let data = new FormData();
+
+        data.append("file", this.refs.file.files[0], file.name);
+        data.append("title", this.state["title"]);
+        data.append("artist", this.state["artist"]);
+        data.append("album", this.state["album"]);
+        data.append("year", this.state["year"]);
+
+        fetch(configuration.api_host + '/api/song', {
+            method: "POST",
+            mode: "cors",
+            credentials: "include",
+            body: data,
+        }).then((response) => {
+            this.props.updateList();
+        })
+    }
+
     render() {
         return (
             <div className="addSong">
-                <form method="POST" encType="multipart/form-data" action={configuration.api_host + '/api/song'}>
+                <form ref="form" method="POST" encType="multipart/form-data">
                     <FieldGroup
                         id="addSongTitle"
                         type="text"
@@ -35,6 +59,7 @@ class AddSong extends Component {
                         name="title"
                         placeholder="Enter title"
                         onChange={this.handleChange}
+                        value={this.state["title"]}
                     />
                     <FieldGroup
                         id="addSongArtist"
@@ -43,6 +68,7 @@ class AddSong extends Component {
                         name="artist"
                         placeholder="Enter artist"
                         onChange={this.handleChange}
+                        value={this.state["artist"]}
                     />
                     <FieldGroup
                         id="addSongAlbum"
@@ -51,6 +77,7 @@ class AddSong extends Component {
                         name="album"
                         placeholder="Enter album"
                         onChange={this.handleChange}
+                        value={this.state["album"]}
                     />
                     <FieldGroup
                         id="addSongYear"
@@ -59,16 +86,19 @@ class AddSong extends Component {
                         name="year"
                         placeholder="Enter year"
                         onChange={this.handleChange}
+                        value={this.state["year"]}
                     />
-                    <FieldGroup
-                        id="addSongFile"
-                        type="file"
-                        label="File (Max size: 5MB)"
-                        name="file"
-                        help="Example block-level help text here."
-                        onChange={this.handleChange}
-                    />
-                    <Button type="submit">
+
+                    <FormGroup controlId="addSongFile">
+                        <ControlLabel>File (Max size: 5MB)</ControlLabel>
+                        <input
+                             type="file"
+                             name="file"
+                             ref="file"
+                        />
+                    </FormGroup>
+
+                    <Button onClick={this.uploadSong}>
                         Submit
                     </Button>
                 </form>

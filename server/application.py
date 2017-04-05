@@ -262,8 +262,6 @@ def getAllSongs():
 @swag_from('swag/songPost.yml')
 def postSong():
     logging.debug('POST api/song')
-    print("ADD SONG")
-    print(request.form)
     logging.debug(request.form)
 
     fileOk = False

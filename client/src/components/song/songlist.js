@@ -67,7 +67,7 @@ class SongList extends Component {
 
                 <Accordion>
                     <Panel header="Add song" eventKey="1">
-                        <AddSong/>
+                        <AddSong updateList={this.fetchSongs}/>
                     </Panel>
                 </Accordion>
                 <Panel>
