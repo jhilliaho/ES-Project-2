@@ -62,10 +62,7 @@ class Playlists extends Component {
         this.state["playlists"].sort((x,y) => {
             let decision = 0;
             sort_choices.some((val) => {
-                let com = this.state.sortDir * (x[val] > y[val] ? 1 : -1);
-                if (x[val] === y[val]) {
-                    com = 0;
-                }
+                let com = this.state.sortDir * (String(x[val]).localeCompare(String(y[val])));
                 if (com != 0) {
                     decision = com;
                     return true;
