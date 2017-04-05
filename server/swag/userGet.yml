@@ -1,13 +1,26 @@
-Route for testing
-It returns the last user as a string
+Get current user
+Returns the current user who is logged in into the application.
 ---
 tags:
   - user
 responses:
   200:
-    description: A single user item
+    description: Current user
     schema:
-      id: rec_username
-      type: string
-      description: The name of the user
-      default: 'steve-harris'
+      type: object
+      title: user
+      required: [email,id,name]
+      properties:
+        email:
+          type: string
+          description: The email address of the user
+        id:
+          type: integer
+          description: The id of the user
+        name:
+          type: string
+          description: The name of the user
+    examples:
+      email: 'aa@aa.aa'
+      id: 1
+      name: 'John Doe'

@@ -1,13 +1,22 @@
-Route for testing
-It returns the last user as a string
+Add a song to a playlist
 ---
 tags:
   - playlists
+parameters:
+  - 
+    name: playlist_id
+    in: path
+    description: The id of the playlist
+    required: true
+    type: integer
+  - 
+    name: song_id
+    in: path
+    description: The id of the song
+    required: true
+    type: integer
 responses:
   200:
-    description: A single user item
-    schema:
-      id: rec_username
-      type: string
-      description: The name of the user
-      default: 'steve-harris'
+    description: ok
+  500:
+    description: wrong ids

@@ -1,13 +1,28 @@
-Route for testing
-It returns the last user as a string
+Update the name of a playlist
 ---
 tags:
   - playlists
+parameters:
+  - 
+    name: playlist_id
+    in: path
+    description: The id of the playlist
+    required: true
+    type: integer
+  -
+    name: playlist
+    in: body
+    description: Updated playlist information
+    required: true
+    schema:
+      type: object
+      title: song
+      required: [name]
+      properties:
+        name:
+          description: The new name of the playlist
+          type: string
+
 responses:
   200:
-    description: A single user item
-    schema:
-      id: rec_username
-      type: string
-      description: The name of the user
-      default: 'steve-harris'
+    description: ok

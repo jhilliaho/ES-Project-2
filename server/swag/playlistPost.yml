@@ -1,13 +1,21 @@
-Route for testing
-It returns the last user as a string
+Create a playlist
 ---
 tags:
   - playlists
+parameters:  
+  -
+    name: playlist
+    in: body
+    description: New playlist
+    required: true
+    schema:
+      type: object
+      title: song
+      required: [name]
+      properties:
+        name:
+          description: The name of the playlist
+          type: string
 responses:
   200:
-    description: A single user item
-    schema:
-      id: rec_username
-      type: string
-      description: The name of the user
-      default: 'steve-harris'
+    description: ok

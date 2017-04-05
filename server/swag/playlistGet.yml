@@ -1,13 +1,92 @@
-Route for testing
-It returns the last user as a string
+Get all playlists of a user
+Returns all playlists of the user who is logged in
 ---
 tags:
   - playlists
 responses:
   200:
-    description: A single user item
+    description: Playlists inside the application
     schema:
-      id: rec_username
-      type: string
-      description: The name of the user
-      default: 'steve-harris'
+      type: array
+      title: playlists
+      items:
+        type: object
+        required: [creation_date,id,name,songs]
+        title: playlist
+        properties:
+          creation_date:
+            type: string
+            description: The creation date of the playlist
+          id:
+            type: integer
+            description: The id of the playlist
+          name:
+            type: string
+            description: The name of the playlist, entered by user
+          songs:
+            type: array
+            items:
+              title: song
+              required: [album,artist,creation_date,id,release_year,title]
+              type: object
+              properties:
+                album:
+                  type: string
+                  description: The album of the song, entered by user
+                artist:
+                  type: string
+                  description: The artist of the song, entered by user
+                creation_date:
+                  type: string
+                  description: The date when the song was uploaded by the user
+                id:
+                  type: integer
+                  description: The id of the song
+                release_year:
+                  type: integer
+                  description: The song in which the song was released, entered by user
+                title:
+                  type: string
+                  description: The title of the song, entered by user
+    examples:
+      [
+        {
+          "creation_date": "Tue, 04 Apr 2017 10:47:11 GMT", 
+          "id": 405, 
+          "name": "Playlist a1", 
+          "songs": [
+            {
+              "album": "Album a", 
+              "artist": "Artist 3", 
+              "creation_date": "Tue, 04 Apr 2017 10:47:11 GMT", 
+              "id": 636, 
+              "release_year": 2003, 
+              "title": "Song a3"
+            }
+          ]
+        }, 
+        {
+          "creation_date": "Tue, 04 Apr 2017 10:47:11 GMT", 
+          "id": 406, 
+          "name": "Playlist a4", 
+          "songs": [
+            {
+              "album": "Album a", 
+              "artist": "Artist 2", 
+              "creation_date": "Tue, 04 Apr 2017 10:47:11 GMT", 
+              "id": 635, 
+              "release_year": 2002, 
+              "title": "Song a2"
+            }, 
+            {
+              "album": "Album a", 
+              "artist": "Artist 3", 
+              "creation_date": "Tue, 04 Apr 2017 10:47:11 GMT", 
+              "id": 636, 
+              "release_year": 2003, 
+              "title": "Song a3"
+            }
+          ]
+        }
+      ]
+      

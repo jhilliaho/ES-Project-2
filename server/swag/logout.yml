@@ -1,13 +1,7 @@
-Route for testing
-It returns the last user as a string
+Logout a user
 ---
 tags:
   - authentication
 responses:
   200:
-    description: A single user item
-    schema:
-      id: rec_username
-      type: string
-      description: The name of the user
-      default: 'steve-harris'
+    description: ok
