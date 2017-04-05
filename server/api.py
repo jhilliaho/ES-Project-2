@@ -8,6 +8,8 @@ import logging
 logging.basicConfig(filename='flask.log',level=logging.DEBUG)
 
 ### USER ###
+
+# Return all users. No errors if database is working
 def getUsers():
     logging.debug('api.getUsers()')
     session = Session()
@@ -16,6 +18,7 @@ def getUsers():
     session.close()
     return users
 
+# Add user. No errors if database is working
 def addUser(name,email,password):
     logging.debug('api.addUser' + " " + name + " " + email + " " + password)
     session = Session()
@@ -25,27 +28,25 @@ def addUser(name,email,password):
     session.add(user)
     session.commit()
     session.close()
+    return "OK"
 
 def deleteUser(id):
     logging.debug('api.deleteUser' + " " + str(id))
     session = Session()
 
     user = session.query(User).filter(User.id==id).first()
-    songs = session.query(Song).filter(Playlist.user_id == id).all()
-    
-    #songs = []
-    fields = ["id", "title", "artist", "album", "release_year", "path", "user_id"]
-    for song in session.query(Song).filter(Song.user_id == id).all(): 
-        logging.debug('delete song:', song)
+
+    for song in session.query(Song).filter(Song.user_id == id).all():
+        logging.debug('delete user:', song)
         try:
             os.remove(os.path.join(os.path.abspath('./uploads'), song.path))
         except Exception as e:
-            logging.debug("Saving unsuccessful" + " " + type(e).__name__)
+            logging.debug("Deleting user unsuccessful" + " " + type(e).__name__)
 
     session.delete(user)
-
     session.commit()
     session.close()
+    return "OK"
 
 def getUserById(id):
     logging.debug('api.getUserById' + str(id))
@@ -69,6 +70,7 @@ def updateUserById(id,name,email):
 
     session.commit()
     session.close()
+    return "OK"
 
 
 ### SONG ###
@@ -93,11 +95,16 @@ def getSongPath(song_id):
 def deleteSong(song_id, user_id):
     logging.debug('api.deleteSong' + " " + str(song_id) + " " + str(user_id))
     session = Session()
-    song = session.query(Song).filter(Song.id==song_id and Song.user_id==user_id).first()
+    song = session.query(Song).filter(Song.id==song_id).first()
+    if song.user_id  != user_id:
+        session.close()
+        logging.debug("Unauthorized")
+        return "UNAUTHORIZED"
+
     session.delete(song)
     session.commit()
     session.close()
-    return
+    return "OK"
 
 def addSong(title, artist, album, year, user_id, file_extension):
     logging.debug('api.addSong' + " " + title + " " + artist + " " + album + " " + str(year) + " " + str(user_id) + " " + file_extension)
@@ -119,17 +126,29 @@ def addSong(title, artist, album, year, user_id, file_extension):
 
     return path
 
-def updateSong(id, title, artist, album, release_year):
+def updateSong(user_id, id, title, artist, album, release_year):
     logging.debug('api.updateSong ' + " " + str(id) + " " + title + " " + artist + " " + album + " " + str(release_year))
     session = Session()
     song = session.query(Song).filter(Song.id==id).first()
+
+    if not song:
+        logging.debug("Song not found")
+        session.close()
+        return "NOT_FOUND"
+
+    if song.user_id  != user_id:
+        session.close()
+        logging.debug("Unauthorized")
+        return "UNAUTHORIZED"
+
     song.title = title
     song.artist = artist
     song.album = album
     song.release_year = release_year
+
     session.commit()
     session.close()
-    return
+    return "OK"
 
 ### PLAYLIST ###
 
@@ -159,51 +178,100 @@ def getPlaylists(user_id):
     return arr
 
 def addPlaylist(user_id, name):
-    logging.debug('api.addPlaylist' + " " + str(user_id), name)
+    logging.debug('api.addPlaylist' + " " + str(user_id) + " " + str(name))
     session = Session()
     playlist = Playlist(name=name, user_id=user_id)
     session.add(playlist)
     session.commit()
     session.close()
+    return "OK"
 
-def deletePlaylist(playlist_id, user_id):
+def deletePlaylist(user_id, playlist_id):
     logging.debug('api.deletePlaylist' + " " + str(playlist_id), str(user_id))
     session = Session()
-    song = session.query(Playlist).filter(Playlist.id == playlist_id and Playlist.user_id == user_id).first()
-    session.delete(song)
+    playlist = session.query(Playlist).filter(Playlist.id == playlist_id).first()
+
+    if not playlist:
+        logging.debug("Playlist not found")
+        session.close()
+        return "NOT_FOUND"
+
+    if playlist.user_id  != user_id:
+        session.close()
+        logging.debug("Unauthorized")
+        return "UNAUTHORIZED"
+
+    session.delete(playlist)
     session.commit()
     session.close()
-    return
+    return "OK"
 
-def updatePlaylist(id, name):
+def updatePlaylist(user_id, id, name):
     logging.debug('api.updatePlaylist' + " " + str(id),name)
     session = Session()
     playlist = session.query(Playlist).filter(Playlist.id==id).first()
+
+    if not playlist:
+        logging.debug("Playlist not found")
+        session.close()
+        return "NOT_FOUND"
+
+    if playlist.user_id  != user_id:
+        session.close()
+        logging.debug("Unauthorized")
+        return "UNAUTHORIZED"
+
     playlist.name = name
     session.commit()
     session.close()
-    return
+    return "OK"
 
-def addSongToPlaylist(song_id, playlist_id):
+def addSongToPlaylist(user_id, song_id, playlist_id):
     logging.debug('api.addSongToPlaylist' + " " + str(song_id) + " " + str(playlist_id))
     session = Session()
     playlist = session.query(Playlist).filter(Playlist.id==playlist_id).first()
+
+    if not playlist:
+        logging.debug("Playlist not found")
+        session.close()
+        return "NOT_FOUND"
+
+    if playlist.user_id  != user_id:
+        session.close()
+        logging.debug("Unauthorized")
+        return "UNAUTHORIZED"
+
     song = session.query(Song).filter(Song.id==song_id).first()
+
+    if not song:
+        logging.debug("Song not found")
+        session.close()
+        return "NOT_FOUND"
 
     if(not song in playlist.songs):
         playlist.songs.append(song)
 
     session.commit()
     session.close()
-    return
+    return "OK"
 
-def removeSongFromPlaylist(song_id, playlist_id):
+def removeSongFromPlaylist(user_id, song_id, playlist_id):
     logging.debug('api.removeSongFromPlaylist' + " " + str(song_id) + " " + str(playlist_id))
     session = Session()
-    playlist = session.query(Playlist).filter(Playlist.id==playlist_id).first()
+    playlist = session.query(Playlist).filter(Playlist.id==playlist_id and Playlist-user_id == user_id).first()
+
+    if not playlist:
+        logging.debug("Playlist not found")
+        session.close()
+        return "NOT_FOUND"
+
+    if playlist.user_id  != user_id:
+        session.close()
+        logging.debug("Unauthorized")
+        return "UNAUTHORIZED"
 
     playlist.songs = [song for song in playlist.songs if str(song.id) != str(song_id)]
 
     session.commit()
     session.close()
-    return
+    return "OK"
