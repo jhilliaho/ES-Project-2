@@ -95,6 +95,18 @@ class SongRow extends Component {
         result.then((res) => {
             res.json().then(json => {
                 console.log(json);
+
+                json = json.filter((playlist) => {
+                    let res = true
+                    playlist.songs.forEach((song) => {
+                       console.log(song.id, this.state.id)
+                       if (song.id == this.state.id) {
+                           res = false
+                       }
+                   });
+                    return res;
+                });
+
                 this.setState({"playlists":json})
             })
 
