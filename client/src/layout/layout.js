@@ -35,28 +35,44 @@ class Layout extends Component {
   render() {
     return (
         <span>
-            <Navbar>
+
+
+            <Navbar inverse collapseOnSelect>
+
                 <Navbar.Header>
-                    <Navbar.Text>
+                    <Navbar.Brand>
                         <Link to="/">{configuration.app_name}</Link>
-                    </Navbar.Text>
+                    </Navbar.Brand>
+                <Navbar.Toggle />
                 </Navbar.Header>
 
-                <Nav>
-                    <NavItem href="#/songs">Songs</NavItem>
-                    <NavItem href="#/playlists">Playlists</NavItem>
-
-                    <NavDropdown title={this.state.username} id="basic-nav-dropdown">
-                        <LinkContainer to="/user">
-                            <MenuItem>Profile</MenuItem>
+                <Navbar.Collapse>
+                    <Nav>
+                        <LinkContainer to="/songs">
+                            <NavItem>Songs</NavItem>
                         </LinkContainer>
 
-                        <MenuItem divider />
+                        <LinkContainer to="/playlists">
+                            <NavItem>Playlists</NavItem>
+                        </LinkContainer>
+                        
+                        <NavDropdown title={this.state.username} id="basic-nav-dropdown">
+                            <LinkContainer to="/user">
+                                <MenuItem>Profile</MenuItem>
+                            </LinkContainer>
 
-                        <MenuItem href="/logout">Log out</MenuItem>
-                    </NavDropdown>
-                </Nav>
+                            <MenuItem divider />
+
+                            <MenuItem href="/logout">Log out</MenuItem>
+                        </NavDropdown>
+                    </Nav>
+                </Navbar.Collapse>
+
             </Navbar>
+
+
+
+
             <Grid>
                 <Row className="show-grid">
                     <Col sm={12}>

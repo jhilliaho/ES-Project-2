@@ -16,6 +16,7 @@ class AddSong extends Component {
     constructor(props) {
         super(props);
         this.state = {"title": "exTitle", "artist": "exArtist", "album": "exAlbum", "year": 1231};
+        this.state = {};
         this.handleChange = this.handleChange.bind(this);
         this.uploadSong = this.uploadSong.bind(this);
     }
