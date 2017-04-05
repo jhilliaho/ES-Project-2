@@ -63,7 +63,7 @@ class AddSong extends Component {
                     <FieldGroup
                         id="addSongFile"
                         type="file"
-                        label="File"
+                        label="File (Max size: 5MB)"
                         name="file"
                         help="Example block-level help text here."
                         onChange={this.handleChange}
@@ -76,5 +76,6 @@ class AddSong extends Component {
         );
     }
 }
+
 
 export default AddSong;

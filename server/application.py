@@ -84,6 +84,9 @@ if not deploy:
 
 application = app
 
+# Maximum file size 5MB
+app.config['MAX_CONTENT_LENGTH'] = 5 * 1024 * 1024
+
 @app.errorhandler(Exception)
 def handle_error(e):
     code = 500
@@ -270,8 +273,12 @@ def postSong():
 
     if file.filename != '' and file:
         file_extension = file.filename.split('.')[-1]
-        #TODO: check file type
+
         logging.debug(file_extension)
+        allowed_extensions = ["mp3", "mp4", "ogg", "wav"]
+        if file_extension not in allowed_extensions:
+            logging.debug("File type not allower")
+            return abort(400)
 
         filename = api.addSong(request.form["title"],request.form["artist"],request.form["album"],request.form["year"], flask_login.current_user.id, file_extension)
         logging.debug(filename)
