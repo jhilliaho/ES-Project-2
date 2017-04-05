@@ -17,7 +17,7 @@ def getUsers():
     return users
 
 def addUser(name,email,password):
-    logging.debug('api.addUser', name, email, password)
+    logging.debug('api.addUser' + " " + name + " " + email + " " + password)
     session = Session()
     
     user = User(email=email, name=name, password=password)
@@ -27,7 +27,7 @@ def addUser(name,email,password):
     session.close()
 
 def deleteUser(id):
-    logging.debug('api.deleteUser', id)
+    logging.debug('api.deleteUser' + " " + id)
     session = Session()
 
     user = session.query(User).filter(User.id==id).first()
@@ -40,7 +40,7 @@ def deleteUser(id):
         try:
             os.remove(os.path.join(os.path.abspath('./uploads'), song.path))
         except Exception as e:
-            logging.debug("Saving unsuccessful", type(e).__name__)
+            logging.debug("Saving unsuccessful" + " " + type(e).__name__)
 
     session.delete(user)
 
@@ -48,7 +48,7 @@ def deleteUser(id):
     session.close()
 
 def getUserById(id):
-    logging.debug('api.getUserById', id)
+    logging.debug('api.getUserById' + str(id))
     session = Session()
     user = session.query(User).filter(User.id==id).first()
 
@@ -58,7 +58,7 @@ def getUserById(id):
     return user.getJsonSelectively(fields)
 
 def updateUserById(id,name,email):
-    logging.debug('api.updateUserById', id, name, email)
+    logging.debug('api.updateUserById' + " " + id + " " + name + " " + email)
     session = Session()
 
     user = session.query(User).filter(User.id==id).first()
@@ -84,14 +84,14 @@ def getSongs():
     return arr
 
 def getSongPath(song_id):
-    logging.debug('api.getSongPath', song_id)
+    logging.debug('api.getSongPath ' + str(song_id))
     session = Session()
     song = session.query(Song).filter(Song.id==song_id).first()
     session.close()
     return song.path
 
 def deleteSong(song_id, user_id):
-    logging.debug('api.deleteSong', song_id, user_id)
+    logging.debug('api.deleteSong' + " " + song_id + " " + user_id)
     session = Session()
     song = session.query(Song).filter(Song.id==song_id and Song.user_id==user_id).first()
     session.delete(song)
@@ -100,7 +100,7 @@ def deleteSong(song_id, user_id):
     return
 
 def addSong(title, artist, album, year, user_id, file_extension):
-    logging.debug('api.addSong', title, artist, album, year, user_id, file_extension)
+    logging.debug('api.addSong' + " " + title + " " + artist + " " + album + " " + year + " " + user_id + " " + file_extension)
     session = Session()
     song = Song(title=title, artist=artist, album=album, release_year=year, user_id=user_id)
     session.add(song)
@@ -115,12 +115,12 @@ def addSong(title, artist, album, year, user_id, file_extension):
     session.commit()
 
     session.close()
-    logging.debug('Saving file with name', path)
+    logging.debug('Saving file with name' + " " + path)
 
     return path
 
 def updateSong(id, title, artist, album, release_year):
-    logging.debug('api.updateSong', id,title,artist,album,release_year)
+    logging.debug('api.updateSong ' + " " + id + " " + title + " " + artist + " " + album + " " + release_year)
     session = Session()
     song = session.query(Song).filter(Song.id==id).first()
     song.title = title
@@ -134,7 +134,7 @@ def updateSong(id, title, artist, album, release_year):
 ### PLAYLIST ###
 
 def getPlaylists(user_id):
-    logging.debug('api.getPlaylists', user_id)
+    logging.debug('api.getPlaylists ' + str(user_id))
     session = Session()
     arr = []
     fields = [
@@ -159,7 +159,7 @@ def getPlaylists(user_id):
     return arr
 
 def addPlaylist(user_id, name):
-    logging.debug('api.addPlaylist', user_id, name)
+    logging.debug('api.addPlaylist' + " " + user_id, name)
     session = Session()
     playlist = Playlist(name=name, user_id=user_id)
     session.add(playlist)
@@ -167,7 +167,7 @@ def addPlaylist(user_id, name):
     session.close()
 
 def deletePlaylist(playlist_id, user_id):
-    logging.debug('api.deletePlaylist', playlist_id, user_id)
+    logging.debug('api.deletePlaylist' + " " + playlist_id, user_id)
     session = Session()
     song = session.query(Playlist).filter(Playlist.id == playlist_id and Playlist.user_id == user_id).first()
     session.delete(song)
@@ -176,7 +176,7 @@ def deletePlaylist(playlist_id, user_id):
     return
 
 def updatePlaylist(id, name):
-    logging.debug('api.updatePlaylist', id,name)
+    logging.debug('api.updatePlaylist' + " " + id,name)
     session = Session()
     playlist = session.query(Playlist).filter(Playlist.id==id).first()
     playlist.name = name
@@ -185,7 +185,7 @@ def updatePlaylist(id, name):
     return
 
 def addSongToPlaylist(song_id, playlist_id):
-    logging.debug('api.addSongToPlaylist', song_id, playlist_id)
+    logging.debug('api.addSongToPlaylist' + " " + song_id + " " + playlist_id)
     session = Session()
     playlist = session.query(Playlist).filter(Playlist.id==playlist_id).first()
     song = session.query(Song).filter(Song.id==song_id).first()
@@ -198,18 +198,11 @@ def addSongToPlaylist(song_id, playlist_id):
     return
 
 def removeSongFromPlaylist(song_id, playlist_id):
-    logging.debug('api.removeSongFromPlaylist', song_id, playlist_id)
+    logging.debug('api.removeSongFromPlaylist' + " " + song_id + " " + playlist_id)
     session = Session()
     playlist = session.query(Playlist).filter(Playlist.id==playlist_id).first()
 
-    print("Removing")
-    print(len(playlist.songs))
-
-    for song in playlist.songs:
-        print(song.id)
-
     playlist.songs = [song for song in playlist.songs if str(song.id) != str(song_id)]
-    print(len(playlist.songs))
 
     session.commit()
     session.close()

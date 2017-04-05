@@ -1,18 +1,7 @@
 import React, { Component } from 'react';
-import { FormGroup, ControlLabel, Glyphicon, FormControl, Popover, OverlayTrigger } from 'react-bootstrap';
+import { Glyphicon, FormControl, Popover, OverlayTrigger } from 'react-bootstrap';
 import './songrow.css';
-
-function FieldGroup({ id, label, help, ...props }) {
-    return (
-        <FormGroup controlId={id}>
-            <ControlLabel>{label}</ControlLabel>
-            <FormControl {...props} />
-        </FormGroup>
-    );
-}
-
-// Properties: song data, callback to update song list
-// Inside this: delete song, edit song, add song to playlist
+import configuration from '../../conf.js'
 
 class SongRow extends Component {
     constructor(props) {
@@ -33,7 +22,7 @@ class SongRow extends Component {
 
     playSong(e){
         let id = e.currentTarget.name;
-        window.open('api/play/'+id, '_blank')
+        window.open(configuration.api_host + '/api/play/'+id, '_blank')
     }
 
     handleChange(e) {
@@ -46,7 +35,7 @@ class SongRow extends Component {
         console.log("Deleting", id);
         e.preventDefault();
 
-        let result = fetch('/api/song/' + id,
+        let result = fetch(configuration.api_host + '/api/song/' + id,
             {
                 method: "DELETE",
                 mode: "cors",
@@ -72,7 +61,7 @@ class SongRow extends Component {
 
         console.log(this.state)
 
-        let result = fetch('/api/song/' + id,
+        let result = fetch(configuration.api_host + '/api/song/' + id,
             {
                 method: "PUT",
                 mode: "cors",
@@ -83,7 +72,7 @@ class SongRow extends Component {
         result.then((res) => {
             console.log(res);
             this.props.updateSongs();
-            this.state.edited = false;
+            this.setState({"edited":false})
         })
             .catch(function(ex) {console.log('FAIL: ', ex)})
     }
@@ -95,10 +84,9 @@ class SongRow extends Component {
     }
 
     getPlaylists(e) {
-        console.log("Shit happens")
         e.preventDefault();
 
-        let result = fetch('/api/playlist',
+        let result = fetch(configuration.api_host + '/api/playlist',
             {
                 method: "GET",
                 mode: "cors",
@@ -107,12 +95,23 @@ class SongRow extends Component {
         result.then((res) => {
             res.json().then(json => {
                 console.log(json);
+
+                json = json.filter((playlist) => {
+                    let res = true
+                    playlist.songs.forEach((song) => {
+                       console.log(song.id, this.state.id)
+                       if (song.id == this.state.id) {
+                           res = false
+                       }
+                   });
+                    return res;
+                });
+
                 this.setState({"playlists":json})
             })
 
         })
             .catch(function(ex) {console.log('FAIL: ', ex)})
-
     }
 
     addSongToPlaylist(e) {
@@ -122,7 +121,7 @@ class SongRow extends Component {
         console.log("Shit happens")
         e.preventDefault();
 
-        let result = fetch('/api/playlist/' + playlist_id + '/songs/' + song_id,
+        let result = fetch(configuration.api_host + '/api/playlist/' + playlist_id + '/songs/' + song_id,
             {
                 method: "POST",
                 mode: "cors",
@@ -141,12 +140,12 @@ class SongRow extends Component {
 
         let playlists = [];
         this.state.playlists.forEach((el) => {
-            playlists.push(<a key={el.id} name={el.id} href="#" onClick={this.addSongToPlaylist}>{el.name}</a>)
+            playlists.push(<li key={el.id} ><a name={el.id} href="#" onClick={this.addSongToPlaylist}>{el.name}</a></li>)
         });
 
         const popover = (
             <Popover id="popover-positioned-right" title="Add song to playlist">
-                {playlists}
+                <ol>{playlists}</ol>
             </Popover>
         );
 
@@ -177,15 +176,6 @@ class SongRow extends Component {
 
                 </td>
         }
-
-
-
-
-
-
-
-
-
 
         let submit =
             <td className="modify">

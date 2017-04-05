@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { FormGroup, ControlLabel, Button, FormControl } from 'react-bootstrap';
 import './addplaylist.css';
+import configuration from '../../conf.js'
 
 class AddPlaylist extends Component {
     constructor() {
@@ -19,7 +20,7 @@ class AddPlaylist extends Component {
         console.log("AddPlaylist")
         e.preventDefault();
 
-        let result = fetch('/api/playlist',
+        let result = fetch(configuration.api_host + '/api/playlist',
             {
                 method: "POST",
                 mode: "cors",
@@ -30,8 +31,7 @@ class AddPlaylist extends Component {
         result.then((res) => {
             console.log(res);
             this.props.updatePlaylists();
-            this.state.edited = false;
-            this.setState({"name":""})
+            this.setState({"name":"", "edited":false})
         })
             .catch(function(ex) {console.log('FAIL: ', ex)})
     }

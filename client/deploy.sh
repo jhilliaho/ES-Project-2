@@ -11,4 +11,4 @@ mkdir ../server/templates
 cp build/*.html ../server/templates/
 cp -r build/static/* ../server/static/
 
-python ../server/application.py
+#python ../server/application.py
