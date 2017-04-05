@@ -48,7 +48,8 @@ class SongList extends Component {
 
             if (el.artist.toLowerCase().indexOf(this.state.artist) === -1 ||
                 el.album.toLowerCase().indexOf(this.state.album) === -1 ||
-                el.title.toLowerCase().indexOf(this.state.title) === -1) {
+                el.title.toLowerCase().indexOf(this.state.title) === -1 ||
+                el.deleted) {
                 return;
             }
 

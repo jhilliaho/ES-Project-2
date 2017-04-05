@@ -24,7 +24,7 @@ import sys
 from werkzeug.exceptions import HTTPException
 
 # RUN SEED ON EVERY LAUNCH
-#import db_seed
+import db_seed
 
 ### LOGGING STARTS ###
 
@@ -295,7 +295,10 @@ def postSong():
 @swag_from('swag/songWithIdDelete.yml')
 def deleteSong(song_id):
     logging.debug('DELETE api/song')
-    return api.deleteSong(song_id, flask_login.current_user.id)
+
+    data = request.json
+    logging.debug(data["mode"])
+    return api.deleteSong(song_id, flask_login.current_user.id, data["mode"])
 
 # PUT /api/song/id, update song data, must be logged in and the owner of the song
 @app.route('/api/song/<song_id>', methods=["PUT"])

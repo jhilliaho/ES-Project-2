@@ -80,7 +80,7 @@ def getSongs():
     session = Session()
 
     arr = []
-    fields = ["id", "title", "artist", "album", "release_year", "path", "user_id"]
+    fields = ["id", "title", "artist", "album", "release_year", "path", "user_id", "deleted"]
     for song in session.query(Song).all(): arr.append(song.getJsonSelectively(fields))
     session.close()
     return arr
@@ -92,8 +92,9 @@ def getSongPath(song_id):
     session.close()
     return song.path
 
-def deleteSong(song_id, user_id):
-    logging.debug('api.deleteSong' + " " + str(song_id) + " " + str(user_id))
+#mode can be "full" or "partial"
+def deleteSong(song_id, user_id, mode):
+    logging.debug('api.deleteSong' + " " + str(song_id) + " " + str(user_id) + " " + str(mode))
     session = Session()
     song = session.query(Song).filter(Song.id==song_id).first()
     if song.user_id  != user_id:
@@ -101,7 +102,11 @@ def deleteSong(song_id, user_id):
         logging.debug("Unauthorized")
         return "UNAUTHORIZED"
 
-    session.delete(song)
+    if mode == "full":
+        session.delete(song)
+    else:
+        song.deleted = True
+
     session.commit()
     session.close()
     return "OK"

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Glyphicon, FormControl, Popover, OverlayTrigger } from 'react-bootstrap';
+import { Glyphicon, FormControl, Popover, OverlayTrigger, Button} from 'react-bootstrap';
 import './songrow.css';
 import configuration from '../../conf.js'
 
@@ -30,16 +30,18 @@ class SongRow extends Component {
         console.log("changed",e.target.name,"to",e.target.value);
     }
 
-    deleteSong(e) {
+    deleteSong(e, method) {
         let id = e.currentTarget.name;
-        console.log("Deleting", id);
+        console.log("Deleting", id, method);
         e.preventDefault();
 
         let result = fetch(configuration.api_host + '/api/song/' + id,
             {
                 method: "DELETE",
                 mode: "cors",
-                credentials: "include"
+                credentials: "include",
+                headers:{'content-type': 'application/json'},
+                body: JSON.stringify({"mode":method})
             });
         result.then((res) => {
             console.log(res)
@@ -84,6 +86,7 @@ class SongRow extends Component {
     }
 
     getPlaylists(e) {
+        if (this.refs.deleteSongPopover != undefined) this.refs.deleteSongPopover.hide();
         e.preventDefault();
 
         let result = fetch(configuration.api_host + '/api/playlist',
@@ -138,20 +141,37 @@ class SongRow extends Component {
     render() {
 
 
+        let empty_list
         let playlists = [];
         this.state.playlists.forEach((el) => {
             playlists.push(<li key={el.id} ><a name={el.id} href="#" onClick={this.addSongToPlaylist}>{el.name}</a></li>)
         });
+        if (playlists.length == 0) {
+            empty_list = <p>No playlists <br/> for this song</p>
+        }
 
-        const popover = (
+        const add_song_to_playlist = (
             <Popover id="popover-positioned-right" title="Add song to playlist">
                 <ol>{playlists}</ol>
+                {empty_list}
             </Popover>
         );
 
+        const delete_song = (
+            <Popover id="popover-positioned-right" title="Delete song">
+                <a href="#" name={this.props.song.id} onClick={(e) => {this.deleteSong(e, "partial")}}>Remove only from the list</a>
+                <br/>
+                <a href="#" name={this.props.song.id} onClick={(e) => {this.deleteSong(e, "full")}}>Remove entirely</a>
+            </Popover>
+        );
+
+
         let buttons =
             <td className="modify">
-                <OverlayTrigger ref="addSongToPlaylistPopover" trigger="click" placement="left" overlay={popover}>
+                <a href="#/songs" name={this.props.song.id} onClick={this.playSong}>
+                    <Glyphicon glyph="play" />
+                </a>
+                <OverlayTrigger ref="addSongToPlaylistPopover" trigger="click" placement="left" overlay={add_song_to_playlist}>
                     <a href="#" onClick={this.getPlaylists}><Glyphicon glyph="plus" /></a>
                 </OverlayTrigger>
             </td>;
@@ -162,15 +182,17 @@ class SongRow extends Component {
                     <a href="#" name={this.props.song.id} onClick={this.editSong}>
                         <Glyphicon glyph="pencil" />
                     </a>
-                    <a href="#" name={this.props.song.id} onClick={this.deleteSong}>
-                        <Glyphicon glyph="trash" />
-                    </a>
+
+                    <OverlayTrigger ref="deleteSongPopover" trigger="click" placement="left" overlay={delete_song}>
+                        <a href="#" onClick={(e) => {e.preventDefault(); this.refs.addSongToPlaylistPopover.hide(); }}><Glyphicon glyph="trash" /></a>
+                    </OverlayTrigger>
+
                     <a href="#/songs" name={this.props.song.id} onClick={this.playSong}>
                         <Glyphicon glyph="play" />
                     </a>
 
 
-                    <OverlayTrigger ref="addSongToPlaylistPopover" trigger="click" placement="left" overlay={popover}>
+                    <OverlayTrigger ref="addSongToPlaylistPopover" trigger="click" placement="left" overlay={add_song_to_playlist}>
                         <a href="#" onClick={this.getPlaylists}><Glyphicon glyph="plus" /></a>
                     </OverlayTrigger>
 
