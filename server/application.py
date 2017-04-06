@@ -393,7 +393,7 @@ def stream(song_id):
     logging.debug('GET /api/play/<song_id>')
     filename = api.getSongPath(song_id)
     if filename == "NOT_FOUND":
-        return abort(400)
+        return abort(400, "No song with that id")
 
     process = Popen(['cat', os.path.join(MUSIC_PATH,filename)], stdout=PIPE, bufsize=-1)
     read_chunk = partial(os.read, process.stdout.fileno(), 1024)
