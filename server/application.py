@@ -237,7 +237,6 @@ def user():
         return "ok"
     else:
         logging.debug('DELETE api/user')
-        print("delete")
         api.deleteUser(id)
         flask_login.logout_user()
         return "ok"

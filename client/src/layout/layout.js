@@ -14,6 +14,21 @@ class Layout extends Component {
         super();
         this.state = {'username': ""}
         this.fetchUser();
+        this.logout = this.logout.bind(this);
+    }
+
+    logout(e) {
+        e.preventDefault();
+        let result = fetch(configuration.api_host + '/logout',
+            {
+                mode: "cors",
+                credentials: "include"
+            })
+        result.then((response) => {return response.text()})
+            .then((res) => {
+                window.location.reload();
+            })
+            .catch(function(ex) {console.log('FAIL: ', ex)})
     }
 
     fetchUser() {
@@ -63,7 +78,7 @@ class Layout extends Component {
 
                             <MenuItem divider />
 
-                            <MenuItem href="/logout">Log out</MenuItem>
+                            <MenuItem onClick={this.logout}>Log out</MenuItem>
                         </NavDropdown>
                     </Nav>
                 </Navbar.Collapse>

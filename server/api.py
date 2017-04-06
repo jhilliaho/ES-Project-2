@@ -38,7 +38,6 @@ def deleteUser(id):
     user = session.query(User).filter(User.id==id).first()
 
     for song in session.query(Song).filter(Song.user_id == id).all():
-        logging.debug('delete user:' + " " + song)
         try:
             os.remove(os.path.join(os.path.abspath('./uploads'), song.path))
         except Exception as e:
