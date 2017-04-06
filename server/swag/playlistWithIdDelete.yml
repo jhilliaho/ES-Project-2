@@ -13,3 +13,9 @@ parameters:
 responses:
   200:
     description: ok
+  400:
+    description: no playlist with that id
+  401:
+    description: you need to be logged in
+  403:
+    description: not allowed to remove a playlist of another user

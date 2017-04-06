@@ -29,3 +29,5 @@ parameters:
 responses:
   200:
     description: ok
+  400:
+    description: email already exists

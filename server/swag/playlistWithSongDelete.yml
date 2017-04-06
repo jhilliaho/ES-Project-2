@@ -16,8 +16,13 @@ parameters:
     description: The id of the song
     required: true
     type: integer
+
 responses:
   200:
     description: ok
-  500:
-    description: wrong ids
+  400:
+    description: no playlist or song with that id
+  401:
+    description: you need to be logged in
+  403:
+    description: not allowed to update a playlist of another user

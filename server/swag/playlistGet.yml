@@ -1,5 +1,5 @@
 Get all playlists
-Use this route to return all playlists of the user who is currenlty logged in into the application.
+Use this route to return all playlists of the user who is currently logged in into the application.
 ---
 tags:
   - playlists

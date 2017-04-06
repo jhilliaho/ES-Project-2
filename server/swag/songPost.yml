@@ -43,3 +43,7 @@ parameters:
 responses:
   200:
     description: ok
+  400:
+    description: bad file type or more than 10MB or reached song limit (10)
+  401:
+    description: you need to be logged in

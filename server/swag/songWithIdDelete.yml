@@ -9,8 +9,21 @@ parameters:
     in: path
     description: The id of the song
     required: true
-    type: integer
-    
+    type: integer 
+  -
+    name: mode
+    in: body
+    description: Describes if the song will be completely removed or just from the list of available songs
+    required: true
+    schema:
+      type: object
+      title: song
+      required: [mode]
+      properties:
+        mode:
+          description: The new release_year of the song
+          type: string
+          enum: ["full", "partial"]
 responses:
   200:
     description: "ok"
