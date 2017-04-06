@@ -8,6 +8,26 @@ class User extends Component {
         this.fetchUser();
         this.state = {'username': "",'email': "",'password':"********"}
         this.deleteUser = this.deleteUser.bind(this);
+        this.updateUser = this.updateUser.bind(this);
+    }
+
+    updateUser(e) {
+        console.log("Update user")
+        e.preventDefault();
+
+        let data = new FormData();
+
+        data.append("name", this.refs.name.value);
+        data.append("email", this.refs.email.value);
+
+        fetch(configuration.api_host + '/api/user', {
+            method: "PUT",
+            mode: "cors",
+            credentials: "include",
+            body: data,
+        }).then((response) => {
+            console.log(response)
+        })
     }
 
     fetchUser() {
@@ -45,20 +65,20 @@ class User extends Component {
 			        <div className="row">
 			            <div className="col-xs-12 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 col-lg-4 col-lg-offset-4 well">
 			                <h3>Welcome to your profile!</h3>
-                			<form method="POST" encType="multipart/form-data" action={configuration.api_host + '/api/user'}>
+                			<form>
 				                <div className="form-group">
 			                        <label htmlFor="userName" autoFocus>Name</label>
-			                        <input type="text" name="name" className="form-control" id="userName" placeholder={this.state.username}/>
+			                        <input ref="name" type="text" name="name" className="form-control" id="userName" placeholder={this.state.username}/>
 			                    </div>
 			                    <div className="form-group">
 			                        <label htmlFor="userEmail">Email address</label>
-			                        <input type="email" name="email" className="form-control" id="userEmail" aria-describedby="emailHelp" placeholder={this.state.email}/>
+			                        <input ref="email" type="email" name="email" className="form-control" id="userEmail" aria-describedby="emailHelp" placeholder={this.state.email}/>
 			                    </div>
 			                    <div className="form-group">
 			                        <label htmlFor="userPassword">Password</label>
-			                        <input disabled type="password" name="password" className="form-control" id="userPassword" placeholder={this.state.password}/>
+			                        <input ref="password" disabled type="password" name="password" className="form-control" id="userPassword" placeholder={this.state.password}/>
 			                    </div>
-			                    <button className="btn btn-primary">Submit changes</button>
+			                    <button className="btn btn-primary" onClick={this.updateUser}>Submit changes</button>
 		                    </form>
                             <button className="btn btn-danger" onClick={this.deleteUser}>Delete Account</button>
 			            </div>

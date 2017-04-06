@@ -13,7 +13,6 @@ from flasgger import Swagger
 from flasgger.utils import swag_from
 from passlib.hash import pbkdf2_sha256
 import json
-import os
 import flask_login
 import configuration
 import os
@@ -46,9 +45,29 @@ logging.debug('Starting the application')
 
 ### FILE PATHS START ###
 
+deploy = False
+
 PATH, tail = os.path.split(os.path.dirname(os.path.realpath(__file__)))
 
-MUSIC_PATH = os.path.join(PATH, 'server/uploads')
+logging.debug("PATH: " + PATH)
+
+if deploy:
+    logging.debug('MODE: Deploy')
+    template_dir = os.path.join(PATH, 'app/templates')
+    static_dir = os.path.join(PATH, 'app/static')
+    MUSIC_PATH = os.path.join(PATH, 'app/uploads')
+else:
+    logging.debug('MODE: Develop')
+    template_dir = os.path.join(PATH, 'client/build')
+    static_dir = os.path.join(PATH, 'client/build/static')
+    MUSIC_PATH = os.path.join(PATH, 'server/uploads')
+
+logging.debug("Music folder: " + MUSIC_PATH)
+logging.debug('Templates: ' + template_dir)
+logging.debug('Static: ' + static_dir)
+
+app = Flask(__name__,template_folder=template_dir,static_folder=static_dir)
+Swagger(app)
 
 if not os.path.exists(MUSIC_PATH):
     logging.debug("Creating the music folder")
@@ -56,27 +75,7 @@ if not os.path.exists(MUSIC_PATH):
     logging.debug("Set folder permissions")
     os.chmod(MUSIC_PATH, 0o700)
 
-deploy = False
-
-if deploy:
-    logging.debug('MODE: Deploy')
-    template_dir = os.path.join(PATH, 'server/templates')
-    static_dir = os.path.join(PATH, 'server/static')
-else:
-    logging.debug('MODE: Develop')
-    template_dir = os.path.join(PATH, 'client/build')
-    static_dir = os.path.join(PATH, 'client/build/static')
-
-logging.debug("Music folder: " + MUSIC_PATH)
-logging.debug('Templates: ' + template_dir)
-logging.debug('Static: ' + static_dir)
-
-
 ### FILE PATHS ENDS ###
-
-
-app = Flask(__name__,template_folder=template_dir,static_folder=static_dir)
-Swagger(app)
 
 # This should be needed only for developing locally
 if not deploy:
@@ -180,18 +179,17 @@ def registerUser():
     #notification that user was added
     return flask.redirect(flask.url_for('login'))
 
-@app.route('/logout', methods=['POST', 'GET'])
+@app.route('/logout', methods=['GET'])
 @swag_from('swag/logout.yml')
 def logout():
     logging.debug('Logout')
-
     flask_login.logout_user()
-    return flask.redirect(flask.url_for('login'))
+    return "ok"
 
 # Redirect unauthorized requests to the login page
 @login_manager.unauthorized_handler
 def unauthorized():
-    logging.debug('Unauthorized')
+    logging.debug('Unauthorized handler')
 
     if flask.request.method == 'GET':
         return flask.redirect(flask.url_for('login'))
@@ -213,10 +211,10 @@ def index():
 
 ### API ###
 
-@app.route('/api/user', endpoint='user', methods=["GET","POST","DELETE"])
+@app.route('/api/user', endpoint='user', methods=["GET","PUT","DELETE"])
 @flask_login.login_required
 @swag_from('swag/userGet.yml', endpoint='user', methods=['GET'])
-@swag_from('swag/userPost.yml', endpoint='user', methods=['POST'])
+@swag_from('swag/userPut.yml', endpoint='user', methods=['PUT'])
 @swag_from('swag/userDelete.yml', endpoint='user', methods=['DELETE'])
 def user():
 
@@ -225,12 +223,13 @@ def user():
     if flask.request.method == 'GET':
         logging.debug('GET api/user')
         return jsonify(api.getUserById(id))
-    elif flask.request.method == 'POST':
-        logging.debug('POST api/user')
+    elif flask.request.method == 'PUT':
+        logging.debug('PUT api/user')
         name = request.form["name"]
         email = request.form["email"]
+        logging.debug("Updating user with: " + name + " and " + email)
         api.updateUserById(id,name,email)
-        return flask.redirect(flask.url_for('index'))
+        return "ok"
     else:
         logging.debug('DELETE api/user')
         print("delete")
@@ -311,7 +310,7 @@ def updateSong(song_id):
     logging.debug('PUT api/song')
     data = request.json
     response = api.updateSong(flask_login.current_user.id, song_id, data["title"],data["artist"],data["album"],data["release_year"],)
-    if response == "UNATHORIZED": return abort(403)
+    if response == "UNAUTHORIZED": return abort(403)
     if response == "NOT_FOUND": return abort(400)
     return "OK"
 
@@ -347,7 +346,7 @@ def postPlaylist():
 def deletePlaylist(playlist_id):
     logging.debug('DELETE api/playlist/id')
     response = api.deletePlaylist(flask_login.current_user.id, playlist_id)
-    if response == "UNATHORIZED": return abort(403)
+    if response == "UNAUTHORIZED": return abort(403)
     if response == "NOT_FOUND": return abort(400)
     return "OK"
 
@@ -360,7 +359,7 @@ def updatePlaylist(playlist_id):
     data = request.json
     logging.debug(data)
     response = api.updatePlaylist(flask_login.current_user.id, playlist_id, data["name"])
-    if response == "UNATHORIZED": return abort(403)
+    if response == "UNAUTHORIZED": return abort(403)
     if response == "NOT_FOUND": return abort(400)
     return "OK"
 
@@ -372,7 +371,7 @@ def updatePlaylist(playlist_id):
 def addSongToPlaylist(playlist_id, song_id):
     logging.debug('POST /api/playlist/<playlist_id>/songs/<song_id>')
     response = api.addSongToPlaylist(flask_login.current_user.id, song_id, playlist_id)
-    if response == "UNATHORIZED": return abort(403)
+    if response == "UNAUTHORIZED": return abort(403)
     if response == "NOT_FOUND": return abort(400)
     return "OK"
 
@@ -383,7 +382,7 @@ def addSongToPlaylist(playlist_id, song_id):
 def removeSongFromPlaylist(playlist_id, song_id):
     logging.debug('DELETE /api/playlist/<playlist_id>/songs/<song_id>')
     response = api.removeSongFromPlaylist(flask_login.current_user.id, song_id, playlist_id)
-    if response == "UNATHORIZED": return abort(403)
+    if response == "UNAUTHORIZED": return abort(403)
     if response == "NOT_FOUND": return abort(400)
     return "OK"
 
