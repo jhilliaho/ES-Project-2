@@ -1,5 +1,5 @@
 Update an existing user
-Use this route to update the user who is currently logged in into the application.
+Use this route to update the user who is currently logged in into the application. It updates only non-empty fields.
 ---
 tags:
   - user
@@ -12,17 +12,19 @@ parameters:
     name: name
     in: formData
     description: The new name of the user
-    required: false
+    required: true
     type: string
   -
     name: email
     in: formData
     description: The new email of the user
-    required: false
+    required: true
     type: string
 
 responses:
   200:
     description: Updated user
   400:
-    description: Bad Request
+    description: Invalid email
+  401:
+    description: you need to be logged in

@@ -6,3 +6,5 @@ tags:
 responses:
   200:
     description: "ok"
+  401:
+    description: you need to be logged in
