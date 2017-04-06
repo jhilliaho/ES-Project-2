@@ -1,5 +1,5 @@
-Delete a song
-Delete the song with the specified id
+Delete an existing song
+Use this route to delete an existing song with a specified id. You can only delete songs which were uploaded by you. You need to be logged in.
 ---
 tags:
   - songs

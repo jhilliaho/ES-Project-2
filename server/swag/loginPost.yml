@@ -1,4 +1,5 @@
 Login a user
+Use this route to login a user.
 ---
 tags:
   - authentication

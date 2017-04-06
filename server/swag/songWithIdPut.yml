@@ -1,4 +1,5 @@
 Update an existing song
+Use this route to update an existing song with a specified id. You can only update songs which were uploaded by you. You need to be logged in.
 ---
 tags:
   - songs

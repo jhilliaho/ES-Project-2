@@ -1,5 +1,5 @@
 Get all songs
-Returns all songs uploaded by all users.
+Use this route to return all songs uploaded to the application by all users. You need to be logged in.
 ---
 tags:
   - songs

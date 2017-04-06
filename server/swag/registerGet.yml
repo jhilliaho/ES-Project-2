@@ -1,4 +1,5 @@
 Get the registration site
+Use this route to get the register page of the application.
 ---
 tags:
   - authentication

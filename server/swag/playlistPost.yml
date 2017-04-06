@@ -1,4 +1,5 @@
 Create a playlist
+Use this route to create a playlist. You need to be logged in.
 ---
 tags:
   - playlists

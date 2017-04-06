@@ -1,4 +1,5 @@
-Update the name of a playlist
+Update a playlist
+Use this route to update the name of a playlist. You can only update your own playlists. You need to be logged in.
 ---
 tags:
   - playlists

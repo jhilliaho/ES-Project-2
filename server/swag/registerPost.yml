@@ -1,4 +1,5 @@
-Register and create a user
+Register a user
+Use this route to register and create a new user.
 ---
 tags:
   - authentication

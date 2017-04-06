@@ -1,4 +1,5 @@
-Get the login page
+Get login page
+Use this route to get the login page of the application.
 ---
 tags:
   - authentication

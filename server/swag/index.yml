@@ -1,4 +1,5 @@
-Returns the index page
+Get index page
+Use this route to get the index page of the application. You need to be logged in.
 ---
 tags:
   - index
