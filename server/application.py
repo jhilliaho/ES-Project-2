@@ -84,7 +84,7 @@ if not deploy:
 application = app
 
 # Maximum file size 5MB
-app.config['MAX_CONTENT_LENGTH'] = 5 * 1024 * 1024
+app.config['MAX_CONTENT_LENGTH'] = 10 * 1024 * 1024
 
 @app.errorhandler(Exception)
 def handle_error(e):
@@ -169,13 +169,18 @@ def registerUser():
     password = request.form['password']
 
     if (len(name) == 0 or len(email) == 0 or len(password) == 0):
-        return abort(400)
+        return flask.redirect(flask.url_for('register'))
 
     logging.debug('POST register with ' + " " + str(name) + " " +  str(email) + " " +  str(password))
 
     password = pbkdf2_sha256.hash(password)
 
-    api.addUser(name,email,password)
+    try:
+        api.addUser(name,email,password)
+    except Exception as e:
+        logging.debug("Creating user unsuccessful: " + str(type(e).__name__))
+        return flask.redirect(flask.url_for('register'))
+
     #notification that user was added
     return flask.redirect(flask.url_for('login'))
 

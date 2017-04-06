@@ -91,7 +91,7 @@ class AddSong extends Component {
                     />
 
                     <FormGroup controlId="addSongFile">
-                        <ControlLabel>File (Max size: 5MB)</ControlLabel>
+                        <ControlLabel>File (Max size: 10MB)</ControlLabel>
                         <input
                              type="file"
                              name="file"
