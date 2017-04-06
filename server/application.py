@@ -46,31 +46,32 @@ logging.debug('Starting the application')
 
 ### FILE PATHS START ###
 
+deploy = True
+
 PATH, tail = os.path.split(os.path.dirname(os.path.realpath(__file__)))
 
-MUSIC_PATH = os.path.join(PATH, 'server/uploads')
+logging.debug("PATH: " + PATH)
+
+if deploy:
+    logging.debug('MODE: Deploy')
+    template_dir = os.path.join(PATH, 'app/templates')
+    static_dir = os.path.join(PATH, 'app/static')
+    MUSIC_PATH = os.path.join(PATH, 'app/uploads')
+else:
+    logging.debug('MODE: Develop')
+    template_dir = os.path.join(PATH, 'client/build')
+    static_dir = os.path.join(PATH, 'client/build/static')
+    MUSIC_PATH = os.path.join(PATH, 'server/uploads')
+
+logging.debug("Music folder: " + MUSIC_PATH)
+logging.debug('Templates: ' + template_dir)
+logging.debug('Static: ' + static_dir)
 
 if not os.path.exists(MUSIC_PATH):
     logging.debug("Creating the music folder")
     os.makedirs(MUSIC_PATH)
     logging.debug("Set folder permissions")
     os.chmod(MUSIC_PATH, 0o700)
-
-deploy = False
-
-if deploy:
-    logging.debug('MODE: Deploy')
-    template_dir = os.path.join(PATH, 'server/templates')
-    static_dir = os.path.join(PATH, 'server/static')
-else:
-    logging.debug('MODE: Develop')
-    template_dir = os.path.join(PATH, 'client/build')
-    static_dir = os.path.join(PATH, 'client/build/static')
-
-logging.debug("Music folder: " + MUSIC_PATH)
-logging.debug('Templates: ' + template_dir)
-logging.debug('Static: ' + static_dir)
-
 
 ### FILE PATHS ENDS ###
 
@@ -184,7 +185,6 @@ def registerUser():
 @swag_from('swag/logout.yml')
 def logout():
     logging.debug('Logout')
-
     flask_login.logout_user()
     return flask.redirect(flask.url_for('login'))
 
