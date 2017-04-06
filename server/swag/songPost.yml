@@ -1,4 +1,5 @@
-Create and Upload a song
+Create a song
+Use this route to create and upload a local song to the application. You can only upload up to 10 songs with a size of 5MB or less. You need to be logged in.
 ---
 tags:
   - songs

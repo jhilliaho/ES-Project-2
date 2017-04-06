@@ -1,4 +1,5 @@
 Add a song to a playlist
+Use this route to add a song to a playlist. You can only add songs to your own playlists. You need to be logged in.
 ---
 tags:
   - playlists

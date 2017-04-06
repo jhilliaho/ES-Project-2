@@ -1,4 +1,5 @@
-Delete the current and logged in user
+Delete the current user
+Use this route to delete the user who is currently logged in into the application.
 ---
 tags:
   - user

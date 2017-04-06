@@ -1,4 +1,5 @@
 Logout a user
+Use this route to logout a user. You need to be logged in.
 ---
 tags:
   - authentication

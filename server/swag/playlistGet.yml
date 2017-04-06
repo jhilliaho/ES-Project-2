@@ -1,5 +1,5 @@
-Get all playlists of a user
-Returns all playlists of the user who is logged in
+Get all playlists
+Use this route to return all playlists of the user who is currenlty logged in into the application.
 ---
 tags:
   - playlists

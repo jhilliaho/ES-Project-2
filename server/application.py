@@ -208,11 +208,6 @@ def index():
 
     return render_template('index.html')
 
-@app.route("/api/spec")
-def spec():
-    logging.debug('GET api/spec')
-
-    return jsonify(Swagger(app))
 
 ### API ###
 

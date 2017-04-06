@@ -1,4 +1,5 @@
 Update an existing user
+Use this route to update the user who is currently logged in into the application.
 ---
 tags:
   - user

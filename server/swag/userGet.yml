@@ -1,5 +1,5 @@
 Get current user
-Returns the current user who is logged in into the application.
+Use this route to return the user who is currently logged in into the application.
 ---
 tags:
   - user
