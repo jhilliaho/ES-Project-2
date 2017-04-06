@@ -89,6 +89,11 @@ def getSongPath(song_id):
     logging.debug('api.getSongPath ' + str(song_id))
     session = Session()
     song = session.query(Song).filter(Song.id==song_id).first()
+    if not song:
+        logging.debug("Song not found")
+        session.close()
+        return "NOT_FOUND"
+
     session.close()
     return song.path
 
