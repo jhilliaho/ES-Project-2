@@ -237,7 +237,7 @@ def user():
         return "ok"
     else:
         logging.debug('DELETE api/user')
-        api.deleteUser(id)
+        api.deleteUser(id, MUSIC_PATH)
         flask_login.logout_user()
         return "ok"
 
@@ -307,6 +307,14 @@ def deleteSong(song_id):
     response = api.deleteSong(song_id, flask_login.current_user.id, data["mode"])
     if response == "UNAUTHORIZED": return abort(403)
     if response == "NOT_FOUND": return abort(400)
+
+    if data["mode"] == "full":
+        try:
+            logging.debug("Removing the music file")
+            os.remove(os.path.join(MUSIC_PATH, api.getSongPath(song_id)))
+        except Exception as e:
+            logging.debug("Removing music file unsuccessful" + " " + str(type(e).__name__))
+
     return response
 
 # PUT /api/song/id, update song data, must be logged in and the owner of the song

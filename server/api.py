@@ -31,7 +31,7 @@ def addUser(name,email,password):
     session.close()
     return "OK"
 
-def deleteUser(id):
+def deleteUser(id, MUSIC_PATH):
     logging.debug('api.deleteUser' + " " + str(id))
     session = Session()
 
@@ -39,7 +39,7 @@ def deleteUser(id):
 
     for song in session.query(Song).filter(Song.user_id == id).all():
         try:
-            os.remove(os.path.join(os.path.abspath('./uploads'), song.path))
+            os.remove(os.path.join(MUSIC_PATH, song.path))
         except Exception as e:
             logging.debug("Deleting user unsuccessful" + " " + type(e).__name__)
 
@@ -115,6 +115,7 @@ def deleteSong(song_id, user_id, mode):
 
     if mode == "full":
         session.delete(song)
+
     else:
         song.deleted = True
 
