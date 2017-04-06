@@ -107,6 +107,11 @@ def deleteSong(song_id, user_id, mode):
         logging.debug("Unauthorized")
         return "UNAUTHORIZED"
 
+    if not song:
+        logging.debug("Song not found")
+        session.close()
+        return "NOT_FOUND"
+
     if mode == "full":
         session.delete(song)
     else:
@@ -286,6 +291,11 @@ def removeSongFromPlaylist(user_id, song_id, playlist_id):
         session.close()
         logging.debug("Unauthorized")
         return "UNAUTHORIZED"
+
+    if not [song for song in playlist.songs if str(song.id) == str(song_id)]:
+        logging.debug("Song not found")
+        session.close()
+        return "NOT_FOUND"
 
     playlist.songs = [song for song in playlist.songs if str(song.id) != str(song_id)]
 

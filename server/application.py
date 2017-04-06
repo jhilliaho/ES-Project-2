@@ -299,7 +299,10 @@ def deleteSong(song_id):
 
     data = request.json
     logging.debug(data["mode"])
-    return api.deleteSong(song_id, flask_login.current_user.id, data["mode"])
+    response = api.deleteSong(song_id, flask_login.current_user.id, data["mode"])
+    if response == "UNAUTHORIZED": return abort(403)
+    if response == "NOT_FOUND": return abort(400)
+    return response
 
 # PUT /api/song/id, update song data, must be logged in and the owner of the song
 @app.route('/api/song/<song_id>', methods=["PUT"])
