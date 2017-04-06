@@ -3,7 +3,7 @@
  */
 
 
-let deploy = false;
+let deploy = true;
 
 var configuration = {app_name: "Soundsfine"};
 
