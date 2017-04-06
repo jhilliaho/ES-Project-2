@@ -84,7 +84,7 @@ if not deploy:
 application = app
 
 # Maximum file size 5MB
-app.config['MAX_CONTENT_LENGTH'] = 5 * 1024 * 1024
+app.config['MAX_CONTENT_LENGTH'] = 10 * 1024 * 1024
 
 @app.errorhandler(Exception)
 def handle_error(e):
@@ -169,13 +169,18 @@ def registerUser():
     password = request.form['password']
 
     if (len(name) == 0 or len(email) == 0 or len(password) == 0):
-        return abort(400)
+        return flask.redirect(flask.url_for('register'))
 
     logging.debug('POST register with ' + " " + str(name) + " " +  str(email) + " " +  str(password))
 
     password = pbkdf2_sha256.hash(password)
 
-    api.addUser(name,email,password)
+    try:
+        api.addUser(name,email,password)
+    except Exception as e:
+        logging.debug("Creating user unsuccessful: " + str(type(e).__name__))
+        return flask.redirect(flask.url_for('register'))
+
     #notification that user was added
     return flask.redirect(flask.url_for('login'))
 
@@ -299,7 +304,10 @@ def deleteSong(song_id):
 
     data = request.json
     logging.debug(data["mode"])
-    return api.deleteSong(song_id, flask_login.current_user.id, data["mode"])
+    response = api.deleteSong(song_id, flask_login.current_user.id, data["mode"])
+    if response == "UNAUTHORIZED": return abort(403)
+    if response == "NOT_FOUND": return abort(400)
+    return response
 
 # PUT /api/song/id, update song data, must be logged in and the owner of the song
 @app.route('/api/song/<song_id>', methods=["PUT"])
@@ -393,7 +401,7 @@ def stream(song_id):
     logging.debug('GET /api/play/<song_id>')
     filename = api.getSongPath(song_id)
     if filename == "NOT_FOUND":
-        return abort(400)
+        return abort(400, "No song with that id")
 
     process = Popen(['cat', os.path.join(MUSIC_PATH,filename)], stdout=PIPE, bufsize=-1)
     read_chunk = partial(os.read, process.stdout.fileno(), 1024)

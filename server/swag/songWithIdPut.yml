@@ -37,4 +37,8 @@ responses:
   200:
     description: "ok"
   400:
-    description: Bad Request
+    description: no song with that id
+  401:
+    description: you need to be logged in
+  403:
+    description: not allowed to update a song of another user

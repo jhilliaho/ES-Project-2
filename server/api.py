@@ -102,6 +102,12 @@ def deleteSong(song_id, user_id, mode):
     logging.debug('api.deleteSong' + " " + str(song_id) + " " + str(user_id) + " " + str(mode))
     session = Session()
     song = session.query(Song).filter(Song.id==song_id).first()
+
+    if not song:
+        logging.debug("Song not found")
+        session.close()
+        return "NOT_FOUND"
+
     if song.user_id  != user_id:
         session.close()
         logging.debug("Unauthorized")
@@ -286,6 +292,11 @@ def removeSongFromPlaylist(user_id, song_id, playlist_id):
         session.close()
         logging.debug("Unauthorized")
         return "UNAUTHORIZED"
+
+    if not [song for song in playlist.songs if str(song.id) == str(song_id)]:
+        logging.debug("Song not found")
+        session.close()
+        return "NOT_FOUND"
 
     playlist.songs = [song for song in playlist.songs if str(song.id) != str(song_id)]
 

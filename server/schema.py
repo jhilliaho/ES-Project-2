@@ -17,7 +17,6 @@ engine = create_engine('mysql+mysqldb://' + configuration.username + ':' + confi
 
 app = Flask(__name__)
 
-
 def selectJson(self, fields):
     obj = {}
 

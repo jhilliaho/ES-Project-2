@@ -23,7 +23,13 @@ parameters:
         mode:
           description: The new release_year of the song
           type: string
-          enum: ["full", "partial"]
+          enum: [ "partial","full"]
 responses:
   200:
     description: "ok"
+  400:
+    description: no song with that id
+  401:
+    description: you need to be logged in
+  403:
+    description: not allowed to delete a song of another user
