@@ -267,7 +267,7 @@ def addSongToPlaylist(user_id, song_id, playlist_id):
 
     song = session.query(Song).filter(Song.id==song_id).first()
 
-    if not song:
+    if not song or song.deleted:
         logging.debug("Song not found")
         session.close()
         return "NOT_FOUND"
