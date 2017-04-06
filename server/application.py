@@ -12,7 +12,7 @@ from flask_restful import Resource, Api
 from flasgger import Swagger
 from flasgger.utils import swag_from
 from passlib.hash import pbkdf2_sha256
-import json
+import re
 import flask_login
 import configuration
 import os
@@ -45,7 +45,7 @@ logging.debug('Starting the application')
 
 ### FILE PATHS START ###
 
-deploy = False
+deploy = True
 
 PATH, tail = os.path.split(os.path.dirname(os.path.realpath(__file__)))
 
@@ -232,6 +232,11 @@ def user():
         logging.debug('PUT api/user')
         name = request.form["name"]
         email = request.form["email"]
+
+        if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+            logging.debug("Email " + str(email) + " not valid")
+            return abort(400)
+
         logging.debug("Updating user with: " + name + " and " + email)
         api.updateUserById(id,name,email)
         return "ok"
@@ -240,8 +245,6 @@ def user():
         api.deleteUser(id, MUSIC_PATH)
         flask_login.logout_user()
         return "ok"
-
-
 
 ### SONGS ###
 
