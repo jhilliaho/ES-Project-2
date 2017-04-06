@@ -415,6 +415,19 @@ def stream(song_id):
     read_chunk = partial(os.read, process.stdout.fileno(), 1024)
     return Response(iter(read_chunk, b''), mimetype='audio/mp3')
 
+
+# JUST FOR CHECKING THE SCALING
+def fibonacci(n):
+    if n <= 2:
+        return 1
+    return fibonacci(n - 1) + fibonacci(n - 2)
+
+@application.route('/fibonacci/<n>', methods=["GET"])
+def httpfibonacci(n):
+    return 'Fibonacci(' + n + ') = ' + str(fibonacci(int(n)))
+
+
+
 ### ROUTING ENDS ###
 
 if __name__ == '__main__':
