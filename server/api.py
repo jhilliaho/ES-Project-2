@@ -38,7 +38,7 @@ def deleteUser(id):
     user = session.query(User).filter(User.id==id).first()
 
     for song in session.query(Song).filter(Song.user_id == id).all():
-        logging.debug('delete user:', song)
+        logging.debug('delete user:' + " " + song)
         try:
             os.remove(os.path.join(os.path.abspath('./uploads'), song.path))
         except Exception as e:
@@ -200,7 +200,7 @@ def addPlaylist(user_id, name):
     return "OK"
 
 def deletePlaylist(user_id, playlist_id):
-    logging.debug('api.deletePlaylist' + " " + str(playlist_id), str(user_id))
+    logging.debug('api.deletePlaylist' + " " + str(playlist_id) + " " + str(user_id))
     session = Session()
     playlist = session.query(Playlist).filter(Playlist.id == playlist_id).first()
 
@@ -220,7 +220,7 @@ def deletePlaylist(user_id, playlist_id):
     return "OK"
 
 def updatePlaylist(user_id, id, name):
-    logging.debug('api.updatePlaylist' + " " + str(id),name)
+    logging.debug('api.updatePlaylist' + " " + str(id) + " " + name)
     session = Session()
     playlist = session.query(Playlist).filter(Playlist.id==id).first()
 
