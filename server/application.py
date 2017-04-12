@@ -22,8 +22,8 @@ from subprocess import Popen, PIPE
 import sys
 from werkzeug.exceptions import HTTPException
 
-# RUN SEED ON EVERY LAUNCH
-import db_seed
+if configuration.reset_db_on_server_start:
+    import db_seed
 
 ### LOGGING STARTS ###
 
@@ -55,7 +55,11 @@ if deploy:
     logging.debug('MODE: Deploy')
     template_dir = os.path.join(PATH, 'app/templates')
     static_dir = os.path.join(PATH, 'app/static')
-    MUSIC_PATH = os.path.join(PATH, 'app/uploads')
+    if os.path.exists('/se-efs'):
+        MUSIC_PATH = '/se-efs/uploads'
+    else:
+        MUSIC_PATH = os.path.join(PATH, 'app/uploads')
+
 else:
     logging.debug('MODE: Develop')
     template_dir = os.path.join(PATH, 'client/build')
@@ -70,10 +74,8 @@ app = Flask(__name__,template_folder=template_dir,static_folder=static_dir)
 Swagger(app)
 
 if not os.path.exists(MUSIC_PATH):
-    logging.debug("Creating the music folder")
-    os.makedirs(MUSIC_PATH)
-    logging.debug("Set folder permissions")
-    os.chmod(MUSIC_PATH, 0o700)
+    logging.debug("Creating the music folder: ")
+    os.makedirs(MUSIC_PATH, mode=0o755, exist_ok=True)
 
 ### FILE PATHS ENDS ###
 
@@ -280,9 +282,10 @@ def postSong():
             return abort(400, "Bad file type")
 
         filename = api.addSong(request.form["title"],request.form["artist"],request.form["album"],request.form["year"], flask_login.current_user.id, file_extension)
-        logging.debug(filename)
+        logging.debug('Saving file to path: ' + " " + os.path.join(MUSIC_PATH, filename))
 
         if filename == "LIMIT_REACHED":
+            logging.debug("Abort, file limit exceeded")
             return abort(400, "File limit exceeded")
 
         try:

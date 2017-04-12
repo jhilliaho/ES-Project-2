@@ -139,14 +139,18 @@ def addSong(title, artist, album, year, user_id, file_extension):
     id = song.id
 
     song = session.query(Song).filter(Song.id==id).first()
-    song.path = str(song.id) + '-' + song.artist + '-' + song.title
-    song.path = ''.join(e for e in song.path if e.isalnum()).lower() + '.' + file_extension
+
+    name_id = ''.join(e for e in str(song.id) if e.isalnum()).lower()
+    name_artist = ''.join(e for e in str(song.artist) if e.isalnum()).lower()
+    name_title = ''.join(e for e in str(song.title) if e.isalnum()).lower()
+
+
+    song.path = name_id + '-' + name_artist + '-' + name_title + '.' + file_extension
 
     path = song.path
     session.commit()
 
     session.close()
-    logging.debug('Saving file with name' + " " + path)
 
     return path
 

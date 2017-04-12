@@ -12,3 +12,9 @@
     color: black;
     width: 76px;
 }
+
+.songCount {
+    border-radius: 10px;
+    background: #dddddd;
+    padding: 7px;
+}

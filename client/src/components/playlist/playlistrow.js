@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Glyphicon, FormControl, Panel} from 'react-bootstrap';
+import { Glyphicon, FormControl, Col, Row, Panel} from 'react-bootstrap';
 import './playlistrow.css';
 import SongList from './songlist'
 import configuration from '../../conf.js'
@@ -121,12 +121,22 @@ class PlayListRow extends Component {
 
         let row =
                 <div onClick={this.changePlaylist}>
-                    <h4 className="playlistTitle">
-                        {this.props.playlist.name} &nbsp;-&nbsp;
-                        {this.props.playlist.creation_date} &nbsp;-&nbsp;
-                        {this.props.playlist.songs.length}
-                    </h4>
-                    {buttons}
+
+                    <Row>
+                        <Col sm={5}>
+                            <h4 className="playlistTitle">{this.props.playlist.name}</h4>
+                        </Col>
+                        <Col sm={2}>
+                            {this.props.playlist.songs.length} songs
+                        </Col>
+                        <Col sm={3}>
+                            <span className="pull-right">{new Date(this.props.playlist.creation_date).toLocaleString('en-IN', {hour12: false})}</span>
+                        </Col>
+                        <Col sm={2}>
+                            <span className="pull-right">{buttons}</span>
+                        </Col>
+                    </Row>
+
                 </div>;
 
         if (this.state.edited) {

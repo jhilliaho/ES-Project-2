@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './home.css';
 import configuration from '../conf.js'
+import { Glyphicon } from 'react-bootstrap';
 
 class Home extends Component {
     constructor() {
@@ -25,16 +26,30 @@ class Home extends Component {
             .catch(function(ex) {console.log('FAIL: ', ex)})
     }
 
+    logout(e) {
+        e.preventDefault();
+        let result = fetch(configuration.api_host + '/logout',
+            {
+                mode: "cors",
+                credentials: "include"
+            })
+        result.then((response) => {return response.text()})
+            .then((res) => {
+                window.location.reload();
+            })
+            .catch(function(ex) {console.log('FAIL: ', ex)})
+    }
+
     render() {
         return (
             <div className="home">
                 <h2>Welcome, {this.state.username}!</h2>
                 <h3>In this application you can:</h3>
                 <ul>
-                    <li><a href="#/songs">Manage and play songs </a></li>
-                    <li><a href="#/playlists">Manage and listen playlists </a></li>
-                    <li><a href="#/user">Edit your user profile </a></li>
-                    <li><a href="logout">Log out </a></li>
+                    <a href="#/songs"><Glyphicon glyph="music"/>Manage and play songs </a><br/>
+                    <a href="#/playlists"><Glyphicon glyph="th-list"/>Manage and listen playlists </a><br/>
+                    <a href="#/user"><Glyphicon glyph="user"/>Edit your user profile </a><br/>
+                    <a href="#" onClick={this.logout}><Glyphicon glyph="log-out"/>Log out</a><br/>
                 </ul>
             </div>
         );

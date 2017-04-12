@@ -11,3 +11,8 @@
 .home a:hover {
     letter-spacing: 2px;
 }
+
+.home .glyphicon {
+    font-size: 70%;
+    margin-bottom: 4px;
+}
