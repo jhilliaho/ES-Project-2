@@ -414,13 +414,17 @@ def removeSongFromPlaylist(playlist_id, song_id):
 def stream(song_id):
     logging.debug('GET /api/play/<song_id>')
     filename = api.getSongPath(song_id)
+    logging.debug('Song filename: ' + str(filename))
     if filename == "NOT_FOUND":
+        logging.debug("No song with that id")
         return abort(400, "No song with that id")
 
-    process = Popen(['cat', os.path.join(MUSIC_PATH,filename)], stdout=PIPE, bufsize=-1)
+    song_path = os.path.join(MUSIC_PATH,filename)
+    logging.debug('Loading song from: ' + str(song_path))
+
+    process = Popen(['cat', song_path], stdout=PIPE, bufsize=-1)
     read_chunk = partial(os.read, process.stdout.fileno(), 1024)
     return Response(iter(read_chunk, b''), mimetype='audio/mp3')
-
 
 # JUST FOR CHECKING THE SCALING
 def fibonacci(n):

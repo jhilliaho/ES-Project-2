@@ -2,7 +2,7 @@ clear;
 close all;
 
 used_length = 1500;
-mean_length = 20;
+mean_length = 1;
 load('matlab_results');
 
 values = table2array(loadbalancingresults);
@@ -22,6 +22,7 @@ for i = 1:used_length
 end
 
 mean_values = avgs/1000;
+figure('Position',[0,0,600, 200])
 plot(timestamps, mean_values)
 title("System response time")
 xlabel("Time (minutes)")
