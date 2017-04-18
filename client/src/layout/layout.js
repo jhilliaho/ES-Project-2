@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
-import { Nav, Navbar, NavItem, NavDropdown, MenuItem} from 'react-bootstrap';
+import { Nav, Navbar, NavItem, NavDropdown, MenuItem, Grid, Row, Col} from 'react-bootstrap';
 import { Link } from 'react-router';
 import { LinkContainer } from 'react-router-bootstrap';
-import {Grid, Row, Col, Glyphicon} from 'react-bootstrap';
 import './layout.css';
 import configuration from '../conf.js'
 

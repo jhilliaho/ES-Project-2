@@ -63,10 +63,11 @@ class Playlists extends Component {
             let decision = 0;
             sort_choices.some((val) => {
                 let com = this.state.sortDir * (String(x[val]).localeCompare(String(y[val])));
-                if (com != 0) {
+                if (com !== 0) {
                     decision = com;
                     return true;
                 }
+                return false;
             });
             return decision;
         });
@@ -80,8 +81,6 @@ class Playlists extends Component {
             let val = this.sortKeys[key]
             sort_options.push(<option key={key} value={key}>{val}</option>);
         });
-
-
 
             return (
             <div className="playlists">

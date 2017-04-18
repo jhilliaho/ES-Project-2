@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Glyphicon, FormControl, Popover, OverlayTrigger, Button} from 'react-bootstrap';
+import { Glyphicon, FormControl, Popover, OverlayTrigger} from 'react-bootstrap';
 import './songrow.css';
 import configuration from '../../conf.js'
 
@@ -86,7 +86,7 @@ class SongRow extends Component {
     }
 
     getPlaylists(e) {
-        if (this.refs.deleteSongPopover != undefined) this.refs.deleteSongPopover.hide();
+        if (this.refs.deleteSongPopover !== undefined) this.refs.deleteSongPopover.hide();
         e.preventDefault();
 
         let result = fetch(configuration.api_host + '/api/playlist',
@@ -103,7 +103,7 @@ class SongRow extends Component {
                     let res = true
                     playlist.songs.forEach((song) => {
                        console.log(song.id, this.state.id)
-                       if (song.id == this.state.id) {
+                       if (song.id === this.state.id) {
                            res = false
                        }
                    });
@@ -146,7 +146,7 @@ class SongRow extends Component {
         this.state.playlists.forEach((el) => {
             playlists.push(<li key={el.id} ><a name={el.id} href="#" onClick={this.addSongToPlaylist}>{el.name}</a></li>)
         });
-        if (playlists.length == 0) {
+        if (playlists.length === 0) {
             empty_list = <p>No playlists <br/> for this song</p>
         }
 

@@ -1,7 +1,3 @@
-/**
- * Created by jani on 04/04/2017.
- */
-
 
 let deploy = true;
 

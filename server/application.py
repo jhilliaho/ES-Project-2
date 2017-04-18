@@ -413,7 +413,9 @@ def removeSongFromPlaylist(playlist_id, song_id):
 @swag_from('swag/play.yml')
 def stream(song_id):
     logging.debug('GET /api/play/<song_id>')
+
     filename = api.getSongPath(song_id)
+
     logging.debug('Song filename: ' + str(filename))
     if filename == "NOT_FOUND":
         logging.debug("No song with that id")
