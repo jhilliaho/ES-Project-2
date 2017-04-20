@@ -3,12 +3,9 @@ from flask import Flask
 from flask import Response
 from flask import jsonify
 from flask import request
-from flask import redirect
-from flask import make_response
 from flask import abort
-from flask_cors import CORS, cross_origin
+from flask_cors import CORS
 from flask import render_template
-from flask_restful import Resource, Api
 from flasgger import Swagger
 from flasgger.utils import swag_from
 from passlib.hash import pbkdf2_sha256
